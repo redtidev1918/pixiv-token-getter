@@ -1,16 +1,30 @@
 {
   "name": "pixiv-token-getter",
-  "version": "1.0.0",
-  "description": "A standalone CLI tool to get Pixiv login tokens using Puppeteer",
+  "version": "2.0.0",
+  "description": "A Node.js library and CLI tool to get Pixiv login tokens using Puppeteer. Easy to integrate into your projects.",
   "main": "index.js",
+  "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./index.js",
+      "import": "./index.js",
+      "types": "./index.d.ts"
+    },
+    "./lib": {
+      "require": "./lib/index.js",
+      "types": "./index.d.ts"
+    },
+    "./cli": "./cli.js"
+  },
   "bin": {
-    "pixiv-token-getter": "./index.js",
-    "ptg": "./index.js"
+    "pixiv-token-getter": "./cli.js",
+    "ptg": "./cli.js"
   },
   "scripts": {
-    "start": "node index.js",
-    "interactive": "node index.js --interactive",
-    "headless": "node index.js --headless"
+    "start": "node cli.js",
+    "interactive": "node cli.js --interactive",
+    "headless": "node cli.js --headless",
+    "example": "node examples/basic-usage.js"
   },
   "keywords": [
     "pixiv",
@@ -19,7 +33,10 @@
     "login",
     "oauth",
     "cli",
-    "authentication"
+    "authentication",
+    "api",
+    "sdk",
+    "pixiv-api"
   ],
   "author": "",
   "license": "MIT",
@@ -33,6 +50,14 @@
   },
   "engines": {
     "node": ">=16.0.0"
-  }
+  },
+  "files": [
+    "lib/",
+    "cli.js",
+    "index.js",
+    "index.d.ts",
+    "README.md",
+    "examples/"
+  ]
 }
 

@@ -1,127 +1,313 @@
-# Pixiv Token Getter (ptg) / Pixiv Token 获取工具
+# Pixiv Token Getter
 
-> A standalone CLI tool to get Pixiv login tokens using Puppeteer  
-> 使用 Puppeteer 获取 Pixiv 登录 Token 的独立 CLI 工具
+> A Node.js library and CLI tool to get Pixiv login tokens using Puppeteer. Easy to integrate into your projects.
 
----
+[![Node.js](https://img.shields.io/badge/Node.js-%3E%3D16.0.0-brightgreen)](https://nodejs.org/)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-## Quick Start / 快速开始
+[中文文档](./README.zh-CN.md) | [English](./README.md)
 
-### Installation / 安装
+## Features
+
+- ✅ **Easy Integration** - Clean API for easy integration
+- ✅ **Two Login Modes** - Interactive and headless login
+- ✅ **TypeScript Support** - Full TypeScript type definitions
+- ✅ **CLI Tool** - Command-line interface
+- ✅ **Flexible Configuration** - Customizable timeout, callbacks, and more
+
+## Installation
 
 ```bash
-npm install
+npm install pixiv-token-getter
 ```
 
-### Global Installation / 全局安装（可选）
+## Quick Start
 
-```bash
-npm install -g
+### As a Library
+
+#### Interactive Login (Recommended)
+
+```javascript
+const { getTokenInteractive } = require('pixiv-token-getter');
+
+async function main() {
+  try {
+    const token = await getTokenInteractive({
+      onBrowserOpen: () => {
+        console.log('Browser opened, please complete login');
+      },
+    });
+
+    console.log('Access Token:', token.access_token);
+    console.log('User:', token.user.name);
+  } catch (error) {
+    console.error('Login failed:', error.message);
+  }
+}
+
+main();
 ```
 
-After global installation, you can use `pixiv-token-getter` or `ptg` command directly.  
-全局安装后，可以直接使用 `pixiv-token-getter` 或 `ptg` 命令。
+#### Headless Login
 
-### Usage / 使用方法
+```javascript
+const { getTokenHeadless } = require('pixiv-token-getter');
 
-**Interactive Login (Recommended) / 交互式登录（推荐）**
+async function main() {
+  try {
+    const token = await getTokenHeadless({
+      username: 'your_username',
+      password: 'your_password',
+    });
+
+    console.log('Access Token:', token.access_token);
+  } catch (error) {
+    console.error('Login failed:', error.message);
+  }
+}
+
+main();
+```
+
+#### ES6 Module Import
+
+```javascript
+import { getTokenInteractive, getTokenHeadless } from 'pixiv-token-getter';
+
+const token = await getTokenInteractive();
+```
+
+### As a CLI Tool
+
+#### Interactive Login
 
 ```bash
-# Using node directly / 直接使用 node
-node index.js
-
-# Or using npm script / 或使用 npm 脚本
 npm start
-
-# Or if installed globally / 或全局安装后
-pixiv-token-getter
 # or
-ptg
+node cli.js --interactive
 ```
 
-A browser window will open. Complete the login in the browser.  
-浏览器窗口会自动打开，请在浏览器中完成登录。
-
-**Headless Login / 无头登录**
+#### Headless Login
 
 ```bash
-node index.js --headless <username> <password>
-# or
-ptg --headless <username> <password>
+node cli.js --headless username password
 ```
 
-**Note / 注意**: Headless login may fail due to Pixiv's bot detection. Use interactive login if it fails.  
-无头登录可能被 Pixiv 检测为自动化登录，如果失败请使用交互式登录。
+#### Specify Output File
 
----
+```bash
+node cli.js --interactive --output=my-token.json
+```
 
-## Output / 输出
+## API Documentation
 
-Token is saved to `pixiv-token.json` by default.  
-Token 默认保存到 `pixiv-token.json` 文件。
+### `getTokenInteractive(options?)`
 
-```json
-{
-  "access_token": "...",
-  "refresh_token": "...",
-  "expires_in": 3600,
-  "token_type": "bearer",
-  "user": {
-    "id": "...",
-    "name": "...",
-    "account": "..."
+Get token via interactive login.
+
+**Parameters:**
+
+- `options` (optional):
+  - `headless` (boolean): Use headless mode, default `false`
+  - `timeout` (number): Timeout in milliseconds, default `300000` (5 minutes)
+  - `onBrowserOpen` (function): Callback when browser opens
+  - `onPageReady` (function): Callback when page is ready
+
+**Returns:** `Promise<TokenInfo>`
+
+**Example:**
+
+```javascript
+const token = await getTokenInteractive({
+  timeout: 600000,
+  onBrowserOpen: (browser) => {
+    console.log('Browser opened');
   },
-  "obtained_at": "2025-11-10T02:50:36.675Z"
+  onPageReady: (page, url) => {
+    console.log('Login page:', url);
+  },
+});
+```
+
+### `getTokenHeadless(options)`
+
+Get token via headless login (username/password).
+
+**Parameters:**
+
+- `options` (required):
+  - `username` (string): Username
+  - `password` (string): Password
+  - `timeout` (number, optional): Timeout in milliseconds, default `120000` (2 minutes)
+
+**Returns:** `Promise<TokenInfo>`
+
+**Example:**
+
+```javascript
+const token = await getTokenHeadless({
+  username: 'your_username',
+  password: 'your_password',
+  timeout: 300000,
+});
+```
+
+### `TokenInfo` Type
+
+```typescript
+interface TokenInfo {
+  access_token: string;      // Access token
+  refresh_token: string;     // Refresh token
+  expires_in: number;        // Expiration time (seconds)
+  token_type: string;        // Token type (usually 'bearer')
+  scope: string;             // Permission scope
+  user: {                    // User information
+    id: string;
+    name: string;
+    account: string;
+  };
 }
 ```
 
----
+## Examples
 
-## Options / 选项
+### Save Token to Config File
 
-- `--interactive` - Interactive login mode (default)  
-  交互式登录模式（默认）
+```javascript
+const { getTokenInteractive } = require('pixiv-token-getter');
+const fs = require('fs');
 
-- `--headless <username> <password>` - Headless login mode  
-  无头登录模式
+async function saveToken() {
+  const token = await getTokenInteractive();
+  
+  const config = {
+    pixiv: {
+      accessToken: token.access_token,
+      refreshToken: token.refresh_token,
+      expiresAt: Date.now() + (token.expires_in * 1000),
+      user: token.user,
+    },
+  };
 
-- `--output <path>` - Specify output file path  
-  指定输出文件路径
+  fs.writeFileSync('config.json', JSON.stringify(config, null, 2));
+  console.log('Token saved');
+}
 
-- `--help` - Show help message  
-  显示帮助信息
+saveToken();
+```
 
-## Command Aliases / 命令别名
+### Use in Express App
 
-After global installation, you can use either:  
-全局安装后，可以使用以下任一命令：
+```javascript
+const express = require('express');
+const { getTokenInteractive } = require('pixiv-token-getter');
 
-- `pixiv-token-getter` - Full command name / 完整命令名
-- `ptg` - Short alias / 简短别名
+const app = express();
+let cachedToken = null;
 
----
+app.get('/api/pixiv/token', async (req, res) => {
+  try {
+    if (cachedToken && cachedToken.expiresAt > Date.now()) {
+      return res.json({ token: cachedToken.accessToken });
+    }
 
-## Requirements / 依赖要求
+    const token = await getTokenInteractive();
+    cachedToken = {
+      accessToken: token.access_token,
+      refreshToken: token.refresh_token,
+      expiresAt: Date.now() + (token.expires_in * 1000),
+    };
+
+    res.json({ token: cachedToken.accessToken });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.listen(3000);
+```
+
+### Use Token to Call Pixiv API
+
+```javascript
+const { getTokenInteractive } = require('pixiv-token-getter');
+const axios = require('axios');
+
+async function getRecommendedIllusts() {
+  const token = await getTokenInteractive();
+
+  const response = await axios.get('https://app-api.pixiv.net/v1/illust/recommended', {
+    headers: {
+      'Authorization': `Bearer ${token.access_token}`,
+    },
+  });
+
+  return response.data.illusts;
+}
+
+getRecommendedIllusts().then(illusts => {
+  console.log('Got', illusts.length, 'recommended illustrations');
+});
+```
+
+More examples in [examples](./examples/) directory.
+
+## CLI Options
+
+- `--interactive` - Interactive login mode (default)
+- `--headless <username> <password>` - Headless login mode
+- `--output=<file>` - Output file path (default: `pixiv-token.json`)
+- `--help` - Show help message
+
+## TypeScript Support
+
+Full TypeScript type definitions are included:
+
+```typescript
+import { getTokenInteractive, TokenInfo } from 'pixiv-token-getter';
+
+const token: TokenInfo = await getTokenInteractive();
+```
+
+## Notes
+
+- ⚠️ **Token Security**: Token files contain sensitive information, keep them secure
+- ⚠️ **Timeout**: Interactive login defaults to 5 minutes timeout
+- ⚠️ **Headless Login**: May be detected as automation, use interactive login if it fails
+- ⚠️ **Browser**: Requires Chromium (Puppeteer will download it automatically)
+
+## Requirements
 
 - Node.js >= 16.0.0
-- Puppeteer (Chromium will be downloaded automatically)  
-  Puppeteer（会自动下载 Chromium）
+- Puppeteer (Chromium will be downloaded automatically)
 
----
-
-## Notes / 注意事项
-
-- ⚠️ Token files contain sensitive information. Keep them secure.  
-  Token 文件包含敏感信息，请妥善保管。
-
-- ⚠️ Do not commit token files to version control.  
-  不要将 token 文件提交到版本控制系统。
-
-- ⚠️ Interactive login has a 5-minute timeout.  
-  交互式登录有 5 分钟超时时间。
-
----
-
-## License / 许可证
+## License
 
 MIT
+
+## FAQ
+
+### Q: How do I use this library in my project?
+
+A: Install and import `getTokenInteractive` or `getTokenHeadless`. See [Quick Start](#quick-start).
+
+### Q: What's the difference between interactive and headless login?
+
+A: 
+- **Interactive**: Opens browser window, manual login, more stable, recommended
+- **Headless**: No UI, automatic login, may be detected as automation
+
+### Q: Do tokens expire?
+
+A: Yes. `access_token` expires (see `expires_in` field), use `refresh_token` to refresh.
+
+### Q: Does it support TypeScript?
+
+A: Yes! Full TypeScript type definitions are included.
+
+## Links
+
+- [Pixiv API Documentation](https://www.pixiv.net/help/article/3629)
+- [Puppeteer Documentation](https://pptr.dev/)
+
+For issues, please submit an [Issue](https://github.com/yourusername/pixiv-token-getter/issues).
