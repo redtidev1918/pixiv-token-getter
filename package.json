@@ -1,0 +1,31 @@
+{
+  "name": "pixiv-token-getter",
+  "version": "1.0.0",
+  "description": "独立工具：使用 Puppeteer 获取 Pixiv 登录 Token",
+  "main": "index.js",
+  "bin": {
+    "pixiv-token-getter": "./index.js"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "interactive": "node index.js --interactive",
+    "headless": "node index.js --headless"
+  },
+  "keywords": [
+    "pixiv",
+    "token",
+    "puppeteer",
+    "login",
+    "oauth"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "puppeteer": "^21.5.0",
+    "axios": "^1.6.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
+

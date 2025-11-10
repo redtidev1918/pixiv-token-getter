@@ -1,0 +1,9 @@
+node_modules/
+.DS_Store
+*.log
+
+# Token files (sensitive information)
+pixiv-token.json
+*-token.json
+token*.json
+
