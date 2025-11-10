@@ -2,6 +2,8 @@
 
 > 一个使用 Puppeteer 获取 Pixiv 登录 Token 的 Node.js 库和 CLI 工具。易于集成到您的项目中。
 
+**简称：** `ptg`（CLI 命令别名）
+
 [![Node.js](https://img.shields.io/badge/Node.js-%3E%3D16.0.0-brightgreen)](https://nodejs.org/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
@@ -79,24 +81,34 @@ const token = await getTokenInteractive();
 
 ### 作为 CLI 工具使用
 
+安装后，您可以使用 `ptg`（简短别名）或 `pixiv-token-getter` 命令：
+
 #### 交互式登录
 
 ```bash
 npm start
 # 或
 node cli.js --interactive
+# 或（如果全局安装）
+ptg --interactive
+# 或
+pixiv-token-getter --interactive
 ```
 
 #### 无头登录
 
 ```bash
 node cli.js --headless username password
+# 或（如果全局安装）
+ptg --headless username password
 ```
 
 #### 指定输出文件
 
 ```bash
 node cli.js --interactive --output=my-token.json
+# 或（如果全局安装）
+ptg --interactive --output=my-token.json
 ```
 
 ## API 文档
@@ -254,10 +266,14 @@ getRecommendedIllusts().then(illusts => {
 
 ## CLI 选项
 
+使用 `ptg` 或 `pixiv-token-getter` 命令（如果全局安装）：
+
 - `--interactive` - 交互式登录模式（默认）
 - `--headless <username> <password>` - 无头登录模式
 - `--output=<file>` - 输出文件路径（默认：`pixiv-token.json`）
 - `--help` - 显示帮助信息
+
+**CLI 别名：** 命令也可以使用 `ptg`（Pixiv Token Getter 的简称）以便使用。
 
 ## TypeScript 支持
 

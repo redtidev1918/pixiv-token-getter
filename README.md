@@ -2,6 +2,8 @@
 
 > A Node.js library and CLI tool to get Pixiv login tokens using Puppeteer. Easy to integrate into your projects.
 
+**Also known as:** `ptg` (CLI command alias)
+
 [![Node.js](https://img.shields.io/badge/Node.js-%3E%3D16.0.0-brightgreen)](https://nodejs.org/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
@@ -79,24 +81,34 @@ const token = await getTokenInteractive();
 
 ### As a CLI Tool
 
+After installation, you can use the CLI with `ptg` (short alias) or `pixiv-token-getter`:
+
 #### Interactive Login
 
 ```bash
 npm start
 # or
 node cli.js --interactive
+# or (if installed globally)
+ptg --interactive
+# or
+pixiv-token-getter --interactive
 ```
 
 #### Headless Login
 
 ```bash
 node cli.js --headless username password
+# or (if installed globally)
+ptg --headless username password
 ```
 
 #### Specify Output File
 
 ```bash
 node cli.js --interactive --output=my-token.json
+# or (if installed globally)
+ptg --interactive --output=my-token.json
 ```
 
 ## API Documentation
@@ -254,10 +266,14 @@ More examples in [examples](./examples/) directory.
 
 ## CLI Options
 
+Use `ptg` or `pixiv-token-getter` command (if installed globally):
+
 - `--interactive` - Interactive login mode (default)
 - `--headless <username> <password>` - Headless login mode
 - `--output=<file>` - Output file path (default: `pixiv-token.json`)
 - `--help` - Show help message
+
+**CLI Alias:** The command is also available as `ptg` (short for Pixiv Token Getter) for convenience.
 
 ## TypeScript Support
 

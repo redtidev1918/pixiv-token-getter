@@ -36,7 +36,8 @@ function showHelp() {
 Pixiv Token Getter - Get Pixiv login token using Puppeteer
 
 Usage:
-  node cli.js [options]
+  ptg [options]                    (short alias, recommended)
+  pixiv-token-getter [options]     (full command name)
 
 Options:
   --interactive           Interactive login (opens browser window, manual login) - default mode
@@ -45,14 +46,18 @@ Options:
   --help                  Show this help message
 
 Examples:
-  node cli.js --interactive
-  node cli.js --headless username password
-  node cli.js --interactive --output=my-token.json
+  ptg --interactive
+  ptg --headless username password
+  ptg --interactive --output=my-token.json
+  
+  pixiv-token-getter --interactive
+  pixiv-token-getter --headless username password
 
 Notes:
   - Interactive login: Browser window will open automatically, complete login in browser
   - Headless login: Requires correct username and password, no browser window shown
   - Token files contain sensitive information, keep them secure
+  - 'ptg' is a shorter alias for 'pixiv-token-getter' (available after global installation)
 `);
 }
 
