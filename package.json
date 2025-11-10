@@ -17,8 +17,8 @@
     "./cli": "./cli.js"
   },
   "bin": {
-    "pixiv-token-getter": "./cli.js",
-    "ptg": "./cli.js"
+    "pixiv-token-getter": "cli.js",
+    "ptg": "cli.js"
   },
   "scripts": {
     "start": "node cli.js",
@@ -42,7 +42,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/zoidberg-xgd/pixiv-token-getter.git"
+    "url": "git+https://github.com/zoidberg-xgd/pixiv-token-getter.git"
   },
   "dependencies": {
     "puppeteer": "^24.15.0",
@@ -60,4 +60,3 @@
     "examples/"
   ]
 }
-
