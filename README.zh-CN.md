@@ -269,9 +269,16 @@ getRecommendedIllusts().then(illusts => {
 使用 `ptg` 或 `pixiv-token-getter` 命令（如果全局安装）：
 
 - `--interactive` - 交互式登录模式（默认）
-- `--headless <username> <password>` - 无头登录模式
+- `--headless [username] [password]` - 无头登录模式
 - `--output=<file>` - 输出文件路径（默认：`pixiv-token.json`）
-- `--help` - 显示帮助信息
+- `--version`, `-v` - 显示版本
+- `--help`, `-h` - 显示帮助信息
+
+**环境变量：** 无头模式下可以通过环境变量提供凭据，避免密码进入 shell 历史：
+
+```bash
+PIXIV_USERNAME=your_username PIXIV_PASSWORD=your_password ptg --headless
+```
 
 **CLI 别名：** 命令也可以使用 `ptg`（Pixiv Token Getter 的简称）以便使用。
 
@@ -287,7 +294,7 @@ const token: TokenInfo = await getTokenInteractive();
 
 ## 注意事项
 
-- ⚠️ **令牌安全**：令牌文件包含敏感信息，请妥善保管
+- ⚠️ **令牌安全**：令牌文件包含敏感信息。CLI 会以 `0600` 权限写入令牌文件，请妥善保管，切勿提交到版本库
 - ⚠️ **超时设置**：交互式登录默认超时时间为 5 分钟
 - ⚠️ **无头登录**：可能被检测为自动化行为，如果失败请使用交互式登录
 - ⚠️ **浏览器**：需要 Chromium（Puppeteer 会自动下载）
@@ -326,5 +333,5 @@ A: 支持！包含完整的 TypeScript 类型定义。
 - [Pixiv API 文档](https://www.pixiv.net/help/article/3629)
 - [Puppeteer 文档](https://pptr.dev/)
 
-如有问题，请提交 [Issue](https://github.com/yourusername/pixiv-token-getter/issues)。
+如有问题，请提交 [Issue](https://github.com/redtidev1918/pixiv-token-getter/issues)。
 

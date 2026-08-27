@@ -2,6 +2,8 @@
  * Pixiv Token Getter - TypeScript Type Definitions
  */
 
+import type { Browser, ElementHandle, Page } from 'puppeteer';
+
 /**
  * Interactive login options
  */
@@ -11,9 +13,9 @@ export interface InteractiveLoginOptions {
   /** Timeout in milliseconds, default 300000 (5 minutes) */
   timeout?: number;
   /** Callback when browser opens */
-  onBrowserOpen?: (browser: any) => void;
+  onBrowserOpen?: (browser: Browser) => void;
   /** Callback when page is ready */
-  onPageReady?: (page: any, url: string) => void;
+  onPageReady?: (page: Page, url: string) => void;
 }
 
 /**
@@ -38,6 +40,12 @@ export interface UserInfo {
   name: string;
   /** User account */
   account: string;
+  /** Profile image URLs */
+  profile_image_urls?: {
+    medium?: string;
+  };
+  /** Whether the user is premium */
+  is_premium?: boolean;
   /** Other user information */
   [key: string]: any;
 }

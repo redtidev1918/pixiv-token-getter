@@ -269,9 +269,16 @@ More examples in [examples](./examples/) directory.
 Use `ptg` or `pixiv-token-getter` command (if installed globally):
 
 - `--interactive` - Interactive login mode (default)
-- `--headless <username> <password>` - Headless login mode
+- `--headless [username] [password]` - Headless login mode
 - `--output=<file>` - Output file path (default: `pixiv-token.json`)
-- `--help` - Show help message
+- `--version`, `-v` - Show version
+- `--help`, `-h` - Show help message
+
+**Environment variables:** In headless mode you can provide credentials via environment variables instead of arguments — this keeps your password out of shell history:
+
+```bash
+PIXIV_USERNAME=your_username PIXIV_PASSWORD=your_password ptg --headless
+```
 
 **CLI Alias:** The command is also available as `ptg` (short for Pixiv Token Getter) for convenience.
 
@@ -287,7 +294,7 @@ const token: TokenInfo = await getTokenInteractive();
 
 ## Notes
 
-- ⚠️ **Token Security**: Token files contain sensitive information, keep them secure
+- ⚠️ **Token Security**: Token files contain sensitive information. The CLI writes them with `0600` permissions; keep them secure and never commit them
 - ⚠️ **Timeout**: Interactive login defaults to 5 minutes timeout
 - ⚠️ **Headless Login**: May be detected as automation, use interactive login if it fails
 - ⚠️ **Browser**: Requires Chromium (Puppeteer will download it automatically)
@@ -326,4 +333,4 @@ A: Yes! Full TypeScript type definitions are included.
 - [Pixiv API Documentation](https://www.pixiv.net/help/article/3629)
 - [Puppeteer Documentation](https://pptr.dev/)
 
-For issues, please submit an [Issue](https://github.com/yourusername/pixiv-token-getter/issues).
+For issues, please submit an [Issue](https://github.com/redtidev1918/pixiv-token-getter/issues).

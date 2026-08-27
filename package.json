@@ -1,6 +1,6 @@
 {
   "name": "pixiv-token-getter",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "A Node.js library and CLI tool to get Pixiv login tokens using Puppeteer. Easy to integrate into your projects.",
   "main": "index.js",
   "types": "index.d.ts",
@@ -38,12 +38,17 @@
     "sdk",
     "pixiv-api"
   ],
-  "author": "",
+  "author": "redtidev1918",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zoidberg-xgd/pixiv-token-getter.git"
+    "url": "git+https://github.com/redtidev1918/pixiv-token-getter.git"
   },
+  "bugs": {
+    "url": "https://github.com/redtidev1918/pixiv-token-getter/issues"
+  },
+  "homepage": "https://github.com/redtidev1918/pixiv-token-getter#readme",
+  "sideEffects": false,
   "dependencies": {
     "puppeteer": "^24.15.0",
     "axios": "^1.6.0"
