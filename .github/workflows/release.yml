@@ -98,10 +98,11 @@ jobs:
           fi
           echo "Releasing $PKG_VERSION"
 
-      - name: Publish to npm
+      - name: Update npm (trusted publishing needs npm >= 11.5.1)
+        run: npm install -g npm@latest
+
+      - name: Publish to npm (trusted publishing - no token needed)
         run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Create or update GitHub Release
         env:
