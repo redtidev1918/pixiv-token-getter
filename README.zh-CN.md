@@ -284,26 +284,28 @@ PIXIV_USERNAME=your_username PIXIV_PASSWORD=your_password ptg --headless
 
 ## 发布新版本
 
-发版流程已通过 [GitHub Actions](./.github/workflows/release.yml) 全自动化：
+发版完全自动化——按 [Conventional Commits](https://www.conventionalcommits.org/zh-Hans/) 规范提交并推送到 `main` 即可。CI（[release.yml](./.github/workflows/release.yml)）会分析自上个标签以来的提交并自动决定：
 
-1. **打版**：使用辅助脚本（自动升级版本号、打标签并推送）：
+| 距上个标签的提交类型                        | 版本级别 | 示例                        |
+| -------------------------------------- | -------- | --------------------------- |
+| `feat!` / `fix!` / `BREAKING CHANGE:`      | major    | `feat!: 全新 API`           |
+| `feat`                                  | minor    | `feat(cli): 新增 --json 参数` |
+| `fix` / `perf` / `revert`                | patch    | `fix: 修正 token 地址`       |
+| 仅 `docs` / `chore` / `ci` / `test` 等     | 不发版   | 不产生新版本                 |
 
-   ```bash
-   ./scripts/release.sh patch   # 或 minor / major
-   ```
+需要发版时自动执行：Node 18/20/22 测试 → 升版本号 + 打标签 → 通过**可信发布**（OIDC，无需任何 token secret，附带 provenance）发布到 npm → 自动生成变更日志并创建 GitHub Release。
 
-2. **CI 自动完成后续**：Node 18/20/22 测试 → `npm publish`（含 provenance）→ 自动创建 GitHub Release。
-
-**一次性配置**：将 npm [automation token](https://www.npmjs.com/settings/~/tokens) 配置为仓库 secret `NPM_TOKEN`：
+**手动发版**（跳过自动判断，立即升版）：
 
 ```bash
-gh secret set NPM_TOKEN
+./scripts/release.sh patch   # 或 minor / major
 ```
 
-**试运行**（仅跑测试，不发布）：
+**其他操作：**
 
 ```bash
-gh workflow run release.yml -f dry_run=true
+gh workflow run release.yml -f dry_run=true      # 仅跑测试，不发布
+gh workflow run release.yml -f tag=v2.1.0        # 补发/重发已有标签
 ```
 
 ## TypeScript 支持

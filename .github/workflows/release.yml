@@ -17,11 +17,11 @@ on:
         default: ''
 
 permissions:
-  contents: write   # create GitHub releases
+  contents: write   # push release commits/tags & create GitHub releases
   id-token: write   # npm provenance
 
 concurrency:
-  group: release-${{ inputs.tag || github.ref }}
+  group: release-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -61,25 +61,117 @@ jobs:
         run: |
           node -e "const ptg = require('./index.js'); for (const k of ['getTokenInteractive','getTokenHeadless','loginInteractive','loginHeadless']) { if (typeof ptg[k] !== 'function') throw new Error('missing export: ' + k); } console.log('exports OK:', Object.keys(ptg).filter(k => k !== 'default').join(', '));"
 
-  release:
-    name: Publish to npm & GitHub Release
+  auto:
+    name: Detect & cut release
     needs: test
     runs-on: ubuntu-latest
     if: >-
+      !cancelled() &&
+      needs.test.result == 'success' &&
+      (
+        (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+        (github.event_name == 'workflow_dispatch' && inputs.tag == '' && inputs.dry_run == false)
+      )
+    outputs:
+      tag: ${{ steps.cut.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Detect release-worthy commits (conventional commits)
+        id: detect
+        run: |
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          if [ -n "$LAST_TAG" ]; then RANGE="${LAST_TAG}..HEAD"; else RANGE="HEAD"; fi
+          echo "Analysing range: ${RANGE:-empty}"
+
+          MAJOR=0
+          MINOR=0
+          PATCH=0
+          re_major='^[a-zA-Z]+([(][^)]*[)])?!:'
+          re_minor='^feat([(][^)]*[)])?:'
+          re_patch='^(fix|perf|revert)([(][^)]*[)])?:'
+          while IFS= read -r subject; do
+            echo "  commit: $subject"
+            if [[ "$subject" =~ $re_major ]]; then MAJOR=1; fi
+            if [[ "$subject" =~ $re_minor ]]; then MINOR=1; fi
+            if [[ "$subject" =~ $re_patch ]]; then PATCH=1; fi
+          done < <(git log --format=%s "$RANGE")
+
+          if git log --format=%B "$RANGE" | grep -q '^BREAKING CHANGE'; then MAJOR=1; fi
+
+          if [ "$MAJOR" -eq 1 ]; then BUMP=major
+          elif [ "$MINOR" -eq 1 ]; then BUMP=minor
+          elif [ "$PATCH" -eq 1 ]; then BUMP=patch
+          else BUMP=""; fi
+
+          echo "bump=$BUMP" >> "$GITHUB_OUTPUT"
+          echo "Version bump decision: ${BUMP:-none (no release-worthy commits)}"
+
+      - name: Guard - HEAD must still be the tip of origin/main
+        run: |
+          git fetch origin main
+          if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/main)" ]; then
+            echo "::notice::Newer commits exist on origin/main; letting the next run handle the release."
+            exit 1
+          fi
+
+      - name: Bump version, cut tag, push
+        id: cut
+        if: steps.detect.outputs.bump != ''
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          npm version "${{ steps.detect.outputs.bump }}" --no-git-tag-version > /dev/null
+          NEW_VERSION=$(node -p "require('./package.json').version")
+
+          if git ls-remote --exit-code --tags origin "refs/tags/v$NEW_VERSION" > /dev/null 2>&1; then
+            echo "Tag v$NEW_VERSION already exists - reusing it for publish."
+            echo "tag=v$NEW_VERSION" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          git add package.json
+          git commit -m "chore(release): v$NEW_VERSION"
+          git tag -a "v$NEW_VERSION" -m "v$NEW_VERSION"
+          git push origin HEAD:main
+          git push origin "v$NEW_VERSION"
+
+          echo "tag=v$NEW_VERSION" >> "$GITHUB_OUTPUT"
+          echo "Cut release v$NEW_VERSION"
+
+      - name: No release needed
+        if: steps.detect.outputs.bump == ''
+        run: echo "::notice::Only non-release commits (docs/chore/ci/test/...) since last tag - skipping release."
+
+  release:
+    name: Publish to npm & GitHub Release
+    needs: [test, auto]
+    runs-on: ubuntu-latest
+    if: >-
+      !cancelled() &&
+      needs.test.result == 'success' &&
       (
         startsWith(github.ref, 'refs/tags/v') ||
-        (github.event_name == 'workflow_dispatch' && inputs.tag != '')
+        (github.event_name == 'workflow_dispatch' && inputs.tag != '') ||
+        needs.auto.outputs.tag != ''
       ) &&
       !(github.event_name == 'workflow_dispatch' && inputs.dry_run == true)
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.tag || github.ref }}
+          ref: ${{ inputs.tag || needs.auto.outputs.tag || github.ref }}
           fetch-depth: 0   # full history for changelog generation
 
       - name: Resolve tag
         id: tag
-        run: echo "tag=${{ inputs.tag || github.ref_name }}" >> "$GITHUB_OUTPUT"
+        run: echo "tag=${{ inputs.tag || needs.auto.outputs.tag || github.ref_name }}" >> "$GITHUB_OUTPUT"
 
       - uses: actions/setup-node@v4
         with:
@@ -113,7 +205,8 @@ jobs:
           {
             echo "## Changes"
             echo
-            git log --pretty=format:'- %s (%h)' "${PREV}..${TAG}"
+            git log --pretty=format:'- %s (%h)' "${PREV}..${TAG}" | grep -v -- '- chore(release)' || true
             echo
           } > RELEASE_NOTES.md
-          gh release create "$TAG" --title "$TAG" --notes-file RELEASE_NOTES.md             || gh release edit "$TAG" --title "$TAG" --notes-file RELEASE_NOTES.md
+          gh release create "$TAG" --title "$TAG" --notes-file RELEASE_NOTES.md \
+            || gh release edit "$TAG" --title "$TAG" --notes-file RELEASE_NOTES.md

@@ -284,26 +284,28 @@ PIXIV_USERNAME=your_username PIXIV_PASSWORD=your_password ptg --headless
 
 ## Releasing
 
-Releases are fully automated with [GitHub Actions](./.github/workflows/release.yml):
+Releases are fully automatic — just follow [Conventional Commits](https://www.conventionalcommits.org/) and push to `main`. CI ([release.yml](./.github/workflows/release.yml)) analyses the commits since the last tag and decides:
 
-1. **Cut a release** with the helper script (bumps version, tags, pushes):
+| Commits since last tag          | Version bump | Example                          |
+| ------------------------------- | ------------ | -------------------------------- |
+| `feat!` / `fix!` / `BREAKING CHANGE:` | major        | `feat!: new api`                 |
+| `feat`                          | minor        | `feat(cli): add --json flag`     |
+| `fix` / `perf` / `revert`        | patch        | `fix: normalize token url`       |
+| only `docs` / `chore` / `ci` / `test`... | none         | no release is cut                |
 
-   ```bash
-   ./scripts/release.sh patch   # or minor / major
-   ```
+When a release is warranted it runs: tests on Node 18/20/22 → version bump + tag → `npm publish` via **trusted publishing** (OIDC, no token secret, with provenance) → GitHub Release with changelog.
 
-2. **CI does the rest**: tests on Node 18/20/22 → `npm publish` (with provenance) → GitHub Release with changelog.
-
-**One-time setup:** add an npm [automation token](https://www.npmjs.com/settings/~/tokens) as the `NPM_TOKEN` repository secret:
+**Manual release** (skip the auto-detection, bump immediately):
 
 ```bash
-gh secret set NPM_TOKEN
+./scripts/release.sh patch   # or minor / major
 ```
 
-**Dry run** (tests only, no publish):
+**Utilities:**
 
 ```bash
-gh workflow run release.yml -f dry_run=true
+gh workflow run release.yml -f dry_run=true      # tests only, no publish
+gh workflow run release.yml -f tag=v2.1.0        # (re)publish an existing tag
 ```
 
 ## TypeScript Support
