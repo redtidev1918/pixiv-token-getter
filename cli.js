@@ -15,14 +15,18 @@ const pkg = require('./package.json');
  * Save token to file (0600 permissions - the file contains secrets)
  */
 function saveTokenToFile(tokenInfo, outputPath) {
+  const obtainedAt = new Date();
   const output = {
     access_token: tokenInfo.access_token,
     refresh_token: tokenInfo.refresh_token,
     expires_in: tokenInfo.expires_in,
+    expires_at: tokenInfo.expires_in
+      ? new Date(obtainedAt.getTime() + tokenInfo.expires_in * 1000).toISOString()
+      : null,
     token_type: tokenInfo.token_type,
     scope: tokenInfo.scope,
     user: tokenInfo.user,
-    obtained_at: new Date().toISOString(),
+    obtained_at: obtainedAt.toISOString(),
   };
 
   const content = JSON.stringify(output, null, 2);
