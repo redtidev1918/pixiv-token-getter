@@ -282,6 +282,30 @@ PIXIV_USERNAME=your_username PIXIV_PASSWORD=your_password ptg --headless
 
 **CLI 别名：** 命令也可以使用 `ptg`（Pixiv Token Getter 的简称）以便使用。
 
+## 发布新版本
+
+发版流程已通过 [GitHub Actions](./.github/workflows/release.yml) 全自动化：
+
+1. **打版**：使用辅助脚本（自动升级版本号、打标签并推送）：
+
+   ```bash
+   ./scripts/release.sh patch   # 或 minor / major
+   ```
+
+2. **CI 自动完成后续**：Node 18/20/22 测试 → `npm publish`（含 provenance）→ 自动创建 GitHub Release。
+
+**一次性配置**：将 npm [automation token](https://www.npmjs.com/settings/~/tokens) 配置为仓库 secret `NPM_TOKEN`：
+
+```bash
+gh secret set NPM_TOKEN
+```
+
+**试运行**（仅跑测试，不发布）：
+
+```bash
+gh workflow run release.yml -f dry_run=true
+```
+
 ## TypeScript 支持
 
 包含完整的 TypeScript 类型定义：

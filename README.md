@@ -282,6 +282,30 @@ PIXIV_USERNAME=your_username PIXIV_PASSWORD=your_password ptg --headless
 
 **CLI Alias:** The command is also available as `ptg` (short for Pixiv Token Getter) for convenience.
 
+## Releasing
+
+Releases are fully automated with [GitHub Actions](./.github/workflows/release.yml):
+
+1. **Cut a release** with the helper script (bumps version, tags, pushes):
+
+   ```bash
+   ./scripts/release.sh patch   # or minor / major
+   ```
+
+2. **CI does the rest**: tests on Node 18/20/22 → `npm publish` (with provenance) → GitHub Release with changelog.
+
+**One-time setup:** add an npm [automation token](https://www.npmjs.com/settings/~/tokens) as the `NPM_TOKEN` repository secret:
+
+```bash
+gh secret set NPM_TOKEN
+```
+
+**Dry run** (tests only, no publish):
+
+```bash
+gh workflow run release.yml -f dry_run=true
+```
+
 ## TypeScript Support
 
 Full TypeScript type definitions are included:
