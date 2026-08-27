@@ -1,7 +1,7 @@
 {
   "name": "pixiv-token-getter",
   "version": "2.2.0",
-  "description": "A Node.js library and CLI tool to get Pixiv login tokens using Puppeteer. Easy to integrate into your projects.",
+  "description": "Get Pixiv API access & refresh tokens from Node.js - library and CLI (ptg) with PKCE OAuth login (interactive or headless). TypeScript types included.",
   "main": "index.js",
   "types": "index.d.ts",
   "exports": {
