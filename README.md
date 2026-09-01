@@ -293,7 +293,7 @@ Releases are fully automatic — just follow [Conventional Commits](https://www.
 | `fix` / `perf` / `revert`        | patch        | `fix: normalize token url`       |
 | only `docs` / `chore` / `ci` / `test`... | none         | no release is cut                |
 
-When a release is warranted it runs: tests on Node 18/20/22 → version bump + tag → `npm publish` via **trusted publishing** (OIDC, no token secret, with provenance) → GitHub Release with changelog.
+When a release is warranted it runs: tests on supported Node 22/24 → version bump + tag → `npm publish` via **trusted publishing** (OIDC, no token secret, with provenance) → GitHub Release with changelog. The repository commits `package-lock.json`; CI and local installs use the same dependency graph.
 
 **Manual release** (skip the auto-detection, bump immediately):
 

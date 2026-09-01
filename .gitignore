@@ -1,11 +1,11 @@
 # Dependencies
 node_modules/
-package-lock.json
 yarn.lock
 
 # Token files (sensitive information)
 *.json
 !package.json
+!package-lock.json
 
 # OS files
 .DS_Store

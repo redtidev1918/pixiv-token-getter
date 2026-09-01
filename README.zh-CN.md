@@ -293,7 +293,7 @@ PIXIV_USERNAME=your_username PIXIV_PASSWORD=your_password ptg --headless
 | `fix` / `perf` / `revert`                | patch    | `fix: 修正 token 地址`       |
 | 仅 `docs` / `chore` / `ci` / `test` 等     | 不发版   | 不产生新版本                 |
 
-需要发版时自动执行：Node 18/20/22 测试 → 升版本号 + 打标签 → 通过**可信发布**（OIDC，无需任何 token secret，附带 provenance）发布到 npm → 自动生成变更日志并创建 GitHub Release。
+需要发版时自动执行：在仍受支持的 Node 22/24 上测试 → 升版本号 + 打标签 → 通过**可信发布**（OIDC，无需任何 token secret，附带 provenance）发布到 npm → 自动生成变更日志并创建 GitHub Release。仓库提交 `package-lock.json`，让 CI 与本地安装使用同一套依赖图。
 
 **手动发版**（跳过自动判断，立即升版）：
 
@@ -360,4 +360,3 @@ A: 支持！包含完整的 TypeScript 类型定义。
 - [Puppeteer 文档](https://pptr.dev/)
 
 如有问题，请提交 [Issue](https://github.com/redtidev1918/pixiv-token-getter/issues)。
-
