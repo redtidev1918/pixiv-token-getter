@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.0](https://github.com/redtidev1918/pixiv-token-getter/compare/v2.4.0...v2.5.0) (2026-09-11)
+
+
+### Features
+
+* **browser:** launch the system browser via puppeteer-core ([#14](https://github.com/redtidev1918/pixiv-token-getter/issues/14)) ([4183495](https://github.com/redtidev1918/pixiv-token-getter/commit/4183495018bd9b6fdcc1eada211d29f32b684eca))
+
 ## [2.4.0](https://github.com/redtidev1918/pixiv-token-getter/compare/v2.3.0...v2.4.0) (2026-09-11)
 
 
