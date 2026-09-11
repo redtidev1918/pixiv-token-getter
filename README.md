@@ -34,17 +34,17 @@ const token = await getToken({ profile: 'default' });
 
 ## 特性
 
-- ✅ **凭据生命周期** —— `getToken()` 缓存 → 刷新 → 登录，并持久化绝对过期时间
-- ✅ **Refresh token 支持** —— `refreshToken()`、`refreshStoredToken()`，且**轮换安全**
-- ✅ **多 profile** —— `--profile main`、`--profile alt`；令牌、偏好与浏览器数据相互隔离
-- ✅ **原生 PKCE OAuth** —— 原有的第一方实现（保留并重构，而非替换）
-- ✅ **Puppeteer 浏览器登录** —— 支持交互式 *与* 自动化（`e2e`），可选 TOTP 二次验证
-- ✅ **持久化浏览器 profile** —— 通常多次运行之间保持已登录状态
-- ✅ **网页会话 Cookie** —— 为 Pixiv **网页**抓取捕获 `PHPSESSID`（仅原生 provider）
-- ✅ **gppt 互操作（可选）** —— 导入 gppt 凭据，**无需任何 Python 依赖**
-- ✅ **原子化、0600 权限的凭据存储** —— 写入失败绝不会截断一个可用的令牌
-- ✅ **稳定错误模型** —— 通过 `error.code` 分支处理，而非解析错误文案
-- ✅ **TypeScript 类型** —— 新 API 与旧 API 均有完整 `.d.ts`
+- **凭据生命周期** —— `getToken()` 缓存 → 刷新 → 登录，并持久化绝对过期时间
+- **Refresh token 支持** —— `refreshToken()`、`refreshStoredToken()`，且**轮换安全**
+- **多 profile** —— `--profile main`、`--profile alt`；令牌、偏好与浏览器数据相互隔离
+- **原生 PKCE OAuth** —— 原有的第一方实现（保留并重构，而非替换）
+- **Puppeteer 浏览器登录** —— 支持交互式 *与* 自动化（`e2e`），可选 TOTP 二次验证
+- **持久化浏览器 profile** —— 通常多次运行之间保持已登录状态
+- **网页会话 Cookie** —— 为 Pixiv **网页**抓取捕获 `PHPSESSID`（仅原生 provider）
+- **gppt 互操作（可选）** —— 导入 gppt 凭据，**无需任何 Python 依赖**
+- **原子化、0600 权限的凭据存储** —— 写入失败绝不会截断一个可用的令牌
+- **稳定错误模型** —— 通过 `error.code` 分支处理，而非解析错误文案
+- **TypeScript 类型** —— 新 API 与旧 API 均有完整 `.d.ts`
 
 ## 安装
 
@@ -204,9 +204,9 @@ await importGppt({ profile: 'main' });   // 读取 ~/.config/gppt/<profile>.toke
 
 我们**刻意不做**的事：
 
-- ❌ 解析 gppt stdout / 用正则抓取密钥
-- ❌ 要求 Python 才能使用核心功能
-- ❌ 为 gppt 令牌伪造 `web_cookies`（见下文）
+- 解析 gppt stdout / 用正则抓取密钥
+- 要求 Python 才能使用核心功能
+- 为 gppt 令牌伪造 `web_cookies`（见下文）
 
 凭据查找顺序：`$GPPT_CONFIG_DIR` → `$XDG_CONFIG_HOME/gppt` → `~/.config/gppt`；文件名 `<profile>.token.json`（默认 profile 也接受裸 `.token.json`）。会对 `~` 做展开（gppt 自身并不会）。
 
@@ -416,7 +416,7 @@ ptg --help | --version
 ## 要求
 
 - **Node.js >= 22.12.0**（与 `package.json#engines` 一致）
-- Puppeteer（作为依赖安装；Chromium 会自动下载）
+- `puppeteer-core`（依赖）；需要系统已安装 Chrome/Chromium，或用 `PUPPETEER_EXECUTABLE_PATH` 指向已有浏览器（安装时不会下载浏览器）
 - *可选：* Python + `gppt`，仅在需要 gppt 互操作 provider 时
 
 ## 致谢

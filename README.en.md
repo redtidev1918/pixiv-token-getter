@@ -34,17 +34,17 @@ const token = await getToken({ profile: 'default' });
 
 ## Features
 
-- ✅ **Credential lifecycle** — `getToken()` cache → refresh → login, with persisted absolute expiry
-- ✅ **Refresh-token support** — `refreshToken()`, `refreshStoredToken()`, including **rotation-safe** persistence
-- ✅ **Multiple profiles** — `--profile main`, `--profile alt`; tokens, prefs and browser data are isolated
-- ✅ **Native PKCE OAuth** — the original, first-class implementation (kept and reorganised, not replaced)
-- ✅ **Puppeteer browser login** — interactive *and* automated (`e2e`) with optional TOTP second factor
-- ✅ **Persistent browser profile** — you usually stay logged in across runs
-- ✅ **Web session cookies** — captures `PHPSESSID` for Pixiv **website** scrapers (native provider only)
-- ✅ **gppt interoperability (optional)** — import a gppt credential without any Python dependency
-- ✅ **Atomic, 0600 credential storage** — a failed write never truncates a good token
-- ✅ **Stable error model** — branch on `error.code` instead of parsing messages
-- ✅ **TypeScript definitions** — full `.d.ts` for both the new and legacy API
+- **Credential lifecycle** — `getToken()` cache → refresh → login, with persisted absolute expiry
+- **Refresh-token support** — `refreshToken()`, `refreshStoredToken()`, including **rotation-safe** persistence
+- **Multiple profiles** — `--profile main`, `--profile alt`; tokens, prefs and browser data are isolated
+- **Native PKCE OAuth** — the original, first-class implementation (kept and reorganised, not replaced)
+- **Puppeteer browser login** — interactive *and* automated (`e2e`) with optional TOTP second factor
+- **Persistent browser profile** — you usually stay logged in across runs
+- **Web session cookies** — captures `PHPSESSID` for Pixiv **website** scrapers (native provider only)
+- **gppt interoperability (optional)** — import a gppt credential without any Python dependency
+- **Atomic, 0600 credential storage** — a failed write never truncates a good token
+- **Stable error model** — branch on `error.code` instead of parsing messages
+- **TypeScript definitions** — full `.d.ts` for both the new and legacy API
 
 ## Installation
 
@@ -204,9 +204,9 @@ await importGppt({ profile: 'main' });   // reads ~/.config/gppt/<profile>.token
 
 What we deliberately do **not** do:
 
-- ❌ parse gppt's stdout / regex-scrape secrets
-- ❌ require Python for core functionality
-- ❌ fabricate `web_cookies` for a gppt token (see below)
+- parse gppt's stdout / regex-scrape secrets
+- require Python for core functionality
+- fabricate `web_cookies` for a gppt token (see below)
 
 Credential lookup order: `$GPPT_CONFIG_DIR` → `$XDG_CONFIG_HOME/gppt` → `~/.config/gppt`; file `<profile>.token.json` (bare `.token.json` also accepted for the default profile). `~` is expanded (gppt itself does not).
 
@@ -416,7 +416,7 @@ Add these to your `.gitignore`: `pixiv-token.json`, `*.token.json`, `.config/pix
 ## Requirements
 
 - **Node.js >= 22.12.0** (matches `package.json#engines`)
-- Puppeteer (installed as a dependency; Chromium is downloaded automatically)
+- `puppeteer-core` (a dependency); a system Chrome/Chromium is required, or point to an existing one with `PUPPETEER_EXECUTABLE_PATH` (no browser is downloaded at install time)
 - *Optional:* Python + `gppt`, only for the gppt interoperability provider
 
 ## Credits

@@ -1,6 +1,6 @@
 - 中文
   - [文档首页](/README.md)
-  - [📥 下载](/docs/download.md)
+  - [下载](/docs/download.md)
   - [这是什么](/README.md#这是什么以及变化了什么)
   - [安装](/README.md#安装)
   - [快速开始](/README.md#快速开始)
@@ -18,7 +18,7 @@
   - [常见问题](/README.md#常见问题)
 - English
   - [Documentation](/README.en.md)
-  - [📥 Download](/docs/en/download.md)
+  - [Download](/docs/en/download.md)
   - [Quick Start](/README.en.md#quick-start)
   - [Guides](/README.en.md#guides)
   - [API](/README.en.md#api)
