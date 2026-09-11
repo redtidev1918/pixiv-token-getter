@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.6.0](https://github.com/redtidev1918/pixiv-token-getter/compare/v2.5.0...v2.6.0) (2026-09-11)
+
+
+### Features
+
+* **api:** export findBrowserExecutable / browserNotFoundMessage ([#16](https://github.com/redtidev1918/pixiv-token-getter/issues/16)) ([ee45045](https://github.com/redtidev1918/pixiv-token-getter/commit/ee45045f679bdeb26258cdd85f211a0c565f5699))
+
 ## [2.5.0](https://github.com/redtidev1918/pixiv-token-getter/compare/v2.4.0...v2.5.0) (2026-09-11)
 
 
