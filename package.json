@@ -68,9 +68,11 @@
     "index.js",
     "index.d.ts",
     "README.md",
-    "README.zh-CN.md",
+    "README.en.md",
     "MIGRATION.md",
+    "MIGRATION.en.md",
     "ACKNOWLEDGMENTS.md",
+    "ACKNOWLEDGMENTS.en.md",
     "LICENSE",
     "examples/"
   ]

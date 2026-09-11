@@ -1,25 +1,18 @@
-# Migration Guide
+# 迁移指南
 
-[中文文档](./MIGRATION.zh-CN.md) | [English](./MIGRATION.md)
+**语言 / Language:** 中文 · [English](./MIGRATION.en.md)
 
-**From `2.3.x` → `2.4.x`**
+**从 `2.3.x` → `2.4.x`**
 
-`2.4.0` upgrades this package from a *one-shot token getter* into a **credential
-manager**. It is a **non-breaking** minor release: nothing was removed, and every
-legacy export keeps its original signature. This guide covers the small number of
-behavioral changes and shows the recommended new API.
+`2.4.0` 把这个包从*一次性 token 抓取器*升级为一个**凭据管理器**。这是一个**无破坏性变更**的 minor 版本：没有删除任何东西，每个旧导出都保留原有签名。本指南覆盖少量行为变化，并展示推荐的新 API。
 
-If you only used `getTokenInteractive()` / `getTokenHeadless()` and the
-`--interactive` / `--headless` CLI flags, **you do not have to change anything** —
-but read section 2 and 3, which contain two intentional behavior differences.
+如果你只用了 `getTokenInteractive()` / `getTokenHeadless()` 以及 `--interactive` / `--headless` CLI 参数，**你不需要改动任何东西** —— 但请阅读第 2 节与第 3 节，其中包含两处有意的行为差异。
 
 ---
 
-## 1. Recommended: move to the lifecycle API
+## 1. 推荐：迁移到生命周期 API
 
-The old helpers always perform a **login**. The new `getToken()` first reuses a
-cached token, then refreshes it, and only logs in as a last resort. For anything
-that runs more than once, this is the single most valuable change.
+旧辅助函数总是执行一次**登录**。新的 `getToken()` 会先复用缓存令牌，然后刷新，最后才登录。对任何需要运行多次的场景来说，这是最有价值的一处改动。
 
 ```js
 // Before (2.3) — logs in every time
@@ -31,40 +24,35 @@ const { getToken } = require('pixiv-token-getter');
 const token = await getToken({ profile: 'default' });
 ```
 
-Both still work. The legacy call is now a thin wrapper that forces a browser
-login, so it is the correct choice only when you *want* a fresh interactive login.
+两者都仍然可用。旧调用现在是一个强制浏览器登录的薄封装，因此只有当你*确实想要*一次全新的交互式登录时，它才是正确选择。
 
-### API mapping
+### API 映射
 
-| 2.3 | 2.4 (recommended) | Notes |
+| 2.3 | 2.4（推荐） | 说明 |
 | --- | --- | --- |
-| `getTokenInteractive(opts)` | `getToken(opts)` | lifecycle; add `force: true` for the old always-login behavior |
-| `getTokenHeadless({ username, password })` | `getToken({ method: 'e2e', username, password })` or `login(...)` | same automation, now cached/refreshable |
-| — | `refreshToken(value)` | refresh an arbitrary refresh token |
-| — | `refreshStoredToken({ profile })` | refresh a profile's stored token |
-| — | `resolveToken(opts)` | like `getToken`, also tells you `source` |
-| — | `status({ profile })` | inspect state without secrets |
-| — | `logout({ profile })` | remove a credential |
-| — | `importGppt({ profile })` | import a gppt credential |
+| `getTokenInteractive(opts)` | `getToken(opts)` | 生命周期；要保留旧的"总是登录"行为，请加 `force: true` |
+| `getTokenHeadless({ username, password })` | `getToken({ method: 'e2e', username, password })` 或 `login(...)` | 同样的自动化，但现在带缓存 / 可刷新 |
+| — | `refreshToken(value)` | 刷新任意一个 refresh token |
+| — | `refreshStoredToken({ profile })` | 刷新某个 profile 已存储的令牌 |
+| — | `resolveToken(opts)` | 类似 `getToken`，并额外告诉你 `source` |
+| — | `status({ profile })` | 查看状态，且不含密钥 |
+| — | `logout({ profile })` | 删除一份凭据 |
+| — | `importGppt({ profile })` | 导入一份 gppt 凭据 |
 
-`loginInteractive()` / `loginHeadless()` remain exported with unchanged
-signatures; `getTokenInteractive` / `getTokenHeadless` are now aliases over them.
+`loginInteractive()` / `loginHeadless()` 仍然导出且签名不变；`getTokenInteractive` / `getTokenHeadless` 现在只是它们的别名。
 
 ---
 
-## 2. Behavior change: `DEFAULT_USER_DATA_DIR`
+## 2. 行为变化：`DEFAULT_USER_DATA_DIR`
 
-The default persistent browser profile moved under a per-profile directory:
+默认的持久化浏览器 profile 迁移到了按 profile 划分的目录下：
 
 ```
 2.3:  ~/.config/pixiv-token-getter/profile
 2.4:  ~/.config/pixiv-token-getter/browser/default
 ```
 
-**Nothing to do.** On first use, `2.4.0` automatically migrates the old `profile/`
-directory to `browser/default/`, so existing logins survive the upgrade. If you
-hard-coded the old absolute path, update it — but prefer passing `userDataDir`
-explicitly or using the `paths` helpers:
+**无需任何操作。** 首次使用时，`2.4.0` 会自动把旧的 `profile/` 目录迁移到 `browser/default/`，因此已有登录状态可以安全升级。如果你硬编码了旧的绝对路径，请更新它 —— 但更好的做法是显式传入 `userDataDir`，或使用 `paths` 辅助函数：
 
 ```js
 const { paths } = require('pixiv-token-getter');
@@ -73,15 +61,11 @@ paths.getBrowserDir('default'); // .../browser/default
 
 ---
 
-## 3. Behavior change: the CLI masks secrets
+## 3. 行为变化：CLI 会遮蔽密钥
 
-In `2.3`, `ptg --interactive` printed the raw `access_token` / `refresh_token`.
-In `2.4`, secrets are **masked by default** (`********abcd`) — in human output
-*and* in `--json` — to keep credentials out of shell scrollback, CI logs and
-screen shares.
+在 `2.3` 中，`ptg --interactive` 会打印原始的 `access_token` / `refresh_token`。在 `2.4` 中，密钥**默认被遮蔽**（`********abcd`）—— 人类可读输出*与* `--json` 皆然 —— 以避免凭据泄漏到终端回滚缓冲、CI 日志与屏幕共享中。
 
-If a script of yours parses stdout to read the token, **stop doing that** — it is
-fragile and it is now masked. Use one of the supported, stable surfaces instead:
+如果你的脚本通过解析 stdout 来读取令牌，**请停止这样做** —— 它既脆弱，现在又已被遮蔽。请改用以下受支持、稳定的接口：
 
 ```bash
 # machine-readable, from the store (still masked)
@@ -100,19 +84,18 @@ const token = await new FileTokenStore().load('default');
 
 ---
 
-## 4. CLI migration
+## 4. CLI 迁移
 
-The command names are new; the old flags are **kept and deprecated** so existing
-scripts keep working.
+命令名是新的；旧参数**被保留并标记为已弃用**，因此现有脚本可以继续工作。
 
-| 2.3 | 2.4 | Status |
+| 2.3 | 2.4 | 状态 |
 | --- | --- | --- |
-| `ptg --interactive` | `ptg login` / `ptg login --method browser` | deprecated alias, still works |
-| `ptg --headless u p` | `ptg login --method e2e --username u --password p` | deprecated alias, still works |
-| `ptg --interactive --output=f.json` | `ptg login --output=f.json` | still works |
-| `npm start` | `ptg login` | `npm start` still runs the CLI |
+| `ptg --interactive` | `ptg login` / `ptg login --method browser` | 已弃用别名，仍然可用 |
+| `ptg --headless u p` | `ptg login --method e2e --username u --password p` | 已弃用别名，仍然可用 |
+| `ptg --interactive --output=f.json` | `ptg login --output=f.json` | 仍然可用 |
+| `npm start` | `ptg login` | `npm start` 仍会运行 CLI |
 
-New commands:
+新命令：
 
 ```bash
 ptg login      # cache → refresh → login, then persist
@@ -124,16 +107,14 @@ ptg import gppt
 ptg token      # print the stored token (masked unless --show-secret)
 ```
 
-**Exit codes** are now stable and useful in CI:
-`0` ok · `1` error · `2` usage · `3` provider unavailable · `4` no/invalid credential state.
+**退出码**现在稳定且在 CI 中很实用：
+`0` 成功 · `1` 错误 · `2` 用法错误 · `3` provider 不可用 · `4` 无 / 无效凭据状态。
 
 ---
 
-## 5. Errors: branch on `error.code`
+## 5. 错误处理：通过 `error.code` 分支
 
-`2.3` threw plain `Error`s with descriptive messages. `2.4` adds error classes
-with a stable `code`. Messages are still human-readable, but please switch to
-type/code checks:
+`2.3` 抛出的是带描述性文案的普通 `Error`。`2.4` 增加了带稳定 `code` 的错误类。文案仍然人类可读，但请改用类型 / code 判断：
 
 ```js
 const { RefreshError, LoginError } = require('pixiv-token-getter');
@@ -151,7 +132,7 @@ try {
 }
 ```
 
-| Class | `code` |
+| 类 | `code` |
 | --- | --- |
 | `AuthError` | `AUTH_ERROR` |
 | `LoginError` | `LOGIN_ERROR` |
@@ -164,10 +145,9 @@ try {
 
 ---
 
-## 6. Token shape: additive fields only
+## 6. 令牌形状：仅新增可选字段
 
-`TokenInfo` gained **optional** fields. Existing fields are unchanged, so old
-code keeps working:
+`TokenInfo` 增加了**可选**字段。既有字段未变，因此旧代码可以继续工作：
 
 ```ts
 interface TokenInfo {
@@ -187,8 +167,7 @@ interface TokenInfo {
 }
 ```
 
-Prefer `expires_at` over computing `Date.now() + expires_in * 1000`: it is
-absolute, timezone-aware, and survives process restarts.
+优先使用 `expires_at`，而不是自行计算 `Date.now() + expires_in * 1000`：它是绝对值、带时区，并且能跨进程重启保持正确。
 
 ```js
 const { isTokenExpired } = require('pixiv-token-getter');
@@ -198,35 +177,35 @@ isTokenExpired(token, 0);     // no skew
 
 ---
 
-## 7. What is new (and safe to adopt)
+## 7. 新增能力（可安全采用）
 
-- **Profiles** — `profiles/<name>.json`, `tokens/<name>.token.json`, `browser/<name>/`.
-  Use `ptg configure --profile main` and `getToken({ profile: 'main' })`.
-- **Refresh** — `refreshToken()` / `refreshStoredToken()`, rotation-safe.
-- **Atomic storage** — writes go through temp file → `fsync` → `rename` → `chmod 0600`.
-- **Providers** — `native` (default), `gppt` (optional), `auto` (controlled fallback).
-- **gppt interoperability** — `ptg import gppt` reads gppt's structured token file;
-  it never parses stdout and never requires Python for anything else.
-- **Web cookies** — `token.web_cookies.PHPSESSID` from native browser login only.
-- **Proxy** — one resolver for both the browser and token requests.
-
----
-
-## 8. Checklist
-
-- [ ] Replace `getTokenInteractive()` with `getToken()` where you only need a token.
-- [ ] Stop parsing CLI stdout for tokens; use the library or `ptg token --json`.
-- [ ] Switch error handling to `error.code` / error classes.
-- [ ] Prefer `expires_at` over in-memory `expires_in` math.
-- [ ] If you hard-coded `.../profile`, switch to `paths.getBrowserDir(profile)`.
-- [ ] For servers/CI, use `getToken({ refreshOnly: true })` and never log in there.
-- [ ] Add `*.token.json`, `pixiv-token.json`, `.config/pixiv-token-getter/` to `.gitignore`.
+- **Profiles** —— `profiles/<name>.json`、`tokens/<name>.token.json`、`browser/<name>/`。
+  使用 `ptg configure --profile main` 与 `getToken({ profile: 'main' })`。
+- **刷新** —— `refreshToken()` / `refreshStoredToken()`，轮换安全。
+- **原子化存储** —— 写入依次经过临时文件 → `fsync` → `rename` → `chmod 0600`。
+- **Provider** —— `native`（默认）、`gppt`（可选）、`auto`（受控回退）。
+- **gppt 互操作** —— `ptg import gppt` 读取 gppt 的结构化令牌文件；
+  它绝不解析 stdout，其它任何环节也不需要 Python。
+- **网页 Cookie** —— `token.web_cookies.PHPSESSID` 仅来自原生浏览器登录。
+- **代理** —— 浏览器与令牌请求共用同一个解析器。
 
 ---
 
-## Need the exact old behavior?
+## 8. 检查清单
 
-Everything maps back one-to-one:
+- [ ] 在你只需要令牌的地方，把 `getTokenInteractive()` 替换为 `getToken()`。
+- [ ] 停止解析 CLI stdout 来获取令牌；改用库或 `ptg token --json`。
+- [ ] 把错误处理切换为 `error.code` / 错误类。
+- [ ] 优先使用 `expires_at`，而不是在内存里对 `expires_in` 做计算。
+- [ ] 如果你硬编码了 `.../profile`，改用 `paths.getBrowserDir(profile)`。
+- [ ] 服务器 / CI 场景请使用 `getToken({ refreshOnly: true })`，永远不要在那些环境里登录。
+- [ ] 把 `*.token.json`、`pixiv-token.json`、`.config/pixiv-token-getter/` 加入 `.gitignore`。
+
+---
+
+## 需要完全一致的老行为？
+
+一切都一一对应：
 
 ```js
 // 2.3 interactive, verbatim behavior
@@ -242,5 +221,5 @@ const token = await getTokenHeadless({ username, password });
 const token = await getToken({ method: 'e2e', force: true, username, password });
 ```
 
-If you hit a case this guide does not cover, please open an
-[issue](https://github.com/redtidev1918/pixiv-token-getter/issues).
+如果遇到本指南未覆盖的情况，请提交一个
+[issue](https://github.com/redtidev1918/pixiv-token-getter/issues)。

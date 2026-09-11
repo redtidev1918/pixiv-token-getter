@@ -1,82 +1,59 @@
-# Acknowledgments
+# 致谢
 
-[中文文档](./ACKNOWLEDGMENTS.zh-CN.md) | [English](./ACKNOWLEDGMENTS.md)
+**语言 / Language:** 中文 · [English](./ACKNOWLEDGMENTS.en.md)
 
-`pixiv-token-getter` stands on the shoulders of a small number of excellent
-open-source projects. This file records what we borrowed — and, just as
-importantly, what we did **not**.
+`pixiv-token-getter` 站在少数几个优秀开源项目的肩膀上。本文件记录了**我们借鉴了什么** —— 同样重要的是，也记录了**我们刻意没有做什么**。
 
 ---
 
-## gppt — `eggplants/get-pixivpy-token`
+## gppt —— `eggplants/get-pixivpy-token`
 
-- **Project:** https://github.com/eggplants/get-pixivpy-token
-- **License:** MIT
-- **What it is:** a Python tool that obtains Pixiv credentials (OAuth token and
-  refresh token) via a headless browser or a device-code style flow, and stores
-  them in a structured token file.
+- **项目：** https://github.com/eggplants/get-pixivpy-token
+- **许可证：** MIT
+- **它是什么：** 一个 Python 工具，通过无头浏览器或设备码（device-code）风格的流程获取 Pixiv 凭据（OAuth 令牌与 refresh token），并把它们保存到结构化的令牌文件中。
 
-### What we intentionally borrowed (design, not code)
+### 我们有意借鉴的部分（设计，而非代码）
 
-The **credential-lifecycle model** of `pixiv-token-getter` 2.4.0 was designed by
-studying gppt (v5). In particular, the following *ideas* were adopted:
+`pixiv-token-getter` 2.4.0 的**凭据生命周期模型**是通过研究 gppt（v5）设计出来的。具体采纳了以下*思路*：
 
-- **One credential store per profile**, with a background CLI login and a
-  machine-readable record of `access_token` / `refresh_token`.
-- **A validity window:** store an *absolute* expiry and treat a token near its
-  expiry as already expired (a safety skew), instead of trusting `expires_in`
-  arithmetic across process restarts.
-- **Refresh-first, login-last:** reuse a cached token if valid, otherwise refresh,
-  and only fall back to an interactive login when refresh is impossible.
-- **An OAuth vs. E2E split** for login: a user-driven browser login for normal
-  use, and an automated username/password flow for unattended setup.
-- **A profile concept**, so multiple Pixiv accounts can coexist.
-- **Interoperability by file contract:** gppt's token file is a stable, documented
-  boundary we can read without depending on the Python package.
+- **每个 profile 一个凭据存储**，配合后台 CLI 登录以及机器可读的 `access_token` / `refresh_token` 记录。
+- **有效性窗口：** 保存*绝对*过期时间，并把接近过期的令牌视作已过期（安全余量），而不是跨进程重启去信任 `expires_in` 的算术。
+- **先刷新、后登录：** 缓存令牌有效就复用，否则刷新，只有在无法刷新时才回退到交互式登录。
+- **OAuth 与 E2E 分离**的登录方式：日常使用由用户驱动浏览器登录，无人值守初始化则走自动化的用户名 / 密码流程。
+- **profile 概念**，让多个 Pixiv 账号可以共存。
+- **以文件契约实现互操作：** gppt 的令牌文件是一个稳定且有文档说明的边界，让我们无需依赖 Python 包即可读取。
 
-### What we deliberately did NOT do
+### 我们刻意没有做的事
 
-- **No gppt source code was copied.** The Node.js implementation (PKCE, the
-  Puppeteer flows, the store, the provider layer) is original work.
-- **No hard dependency on gppt or Python.** gppt is an *optional* interoperability
-  provider. `npm install pixiv-token-getter` never installs or requires Python, and
-  the native provider works fully standalone.
-- **We never parse gppt's stdout.** Importing a gppt credential reads its
-  structured token file (`<profile>.token.json`) only — scraping console output for
-  secrets would be brittle and insecure.
-- **We never fabricate `web_cookies` for a gppt-imported token.** A gppt credential
-  carries an App-API token, not a website session. The field is omitted rather than
-  filled with a fake value.
+- **没有复制任何 gppt 源码。** Node.js 实现（PKCE、Puppeteer 流程、存储、provider 层）均为原创工作。
+- **不硬依赖 gppt 或 Python。** gppt 是一个*可选*的互操作 provider。`npm install pixiv-token-getter` 永远不会安装或要求 Python，原生 provider 可完全独立工作。
+- **我们绝不解析 gppt 的 stdout。** 导入 gppt 凭据只读取其结构化令牌文件（`<profile>.token.json`）—— 从控制台输出里抓取密钥既脆弱又不安全。
+- **我们绝不为 gppt 导入的令牌伪造 `web_cookies`。** gppt 凭据携带的是 App API 令牌，而不是网站会话。该字段被直接省略，而不是填入一个假值。
 
-### File-format compatibility
+### 文件格式兼容性
 
-`ptg import gppt` looks for gppt's credential file at, in order:
+`ptg import gppt` 按以下顺序查找 gppt 的凭据文件：
 
 1. `$GPPT_CONFIG_DIR`
 2. `$XDG_CONFIG_HOME/gppt`
 3. `~/.config/gppt`
 
-with the file name `<profile>.token.json` (a bare `.token.json` is also accepted
-for the default profile). We expand `~` ourselves, because gppt does not.
+文件名为 `<profile>.token.json`（默认 profile 也接受裸 `.token.json`）。我们会自行展开 `~`，因为 gppt 不会。
 
 ---
 
-## Other inspirations
+## 其他灵感来源
 
-- **[Puppeteer](https://pptr.dev/)** — Apache-2.0 — headless browser automation.
-- **[axios](https://axios-http.com/)** — MIT — HTTP transport for the token endpoint.
-- **Pixiv's OAuth2 + PKCE flow** — the public client flow documented by the
-  community; the constants used here are the long-standing public app credentials
-  that third-party clients have used for years.
+- **[Puppeteer](https://pptr.dev/)** —— Apache-2.0 —— 无头浏览器自动化。
+- **[axios](https://axios-http.com/)** —— MIT —— 令牌端点的 HTTP 传输。
+- **Pixiv 的 OAuth2 + PKCE 流程** —— 社区记录的公开客户端流程；这里使用的常量是第三方客户端沿用多年的长期公开应用凭据。
 
 ---
 
-## Attribution in this repository
+## 本仓库中的归属说明
 
-- [`README.md`](./README.md) / [`README.zh-CN.md`](./README.zh-CN.md) — the Credits
-  section points here and to gppt.
-- [`LICENSE`](./LICENSE) — this project's own license (MIT), matching gppt's.
+- [`README.md`](./README.md) / [`README.en.md`](./README.en.md) —— 致谢章节指回此处与 gppt。
+- [`LICENSE`](./LICENSE) —— 本项目自身的许可证（MIT），与 gppt 一致。
 
-If you believe something here is mis-attributed, please open an
-[issue](https://github.com/redtidev1918/pixiv-token-getter/issues) so it can be
-corrected.
+如果你认为此处存在归属错误，请提交一个
+[issue](https://github.com/redtidev1918/pixiv-token-getter/issues)，我们会予以更正。
