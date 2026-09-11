@@ -1,5 +1,7 @@
 # Acknowledgments
 
+[中文文档](./ACKNOWLEDGMENTS.zh-CN.md) | [English](./ACKNOWLEDGMENTS.md)
+
 `pixiv-token-getter` stands on the shoulders of a small number of excellent
 open-source projects. This file records what we borrowed — and, just as
 importantly, what we did **not**.

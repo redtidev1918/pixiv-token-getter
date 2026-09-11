@@ -370,7 +370,7 @@ const {
 1. `DEFAULT_USER_DATA_DIR` 现在是 `.../browser/default`（自动迁移，无需操作）。
 2. CLI 在输出中**遮蔽**令牌，而非直接打印；如确实需要原始值，请使用 `ptg token --show-secret`。
 
-完整的分步指南见 [MIGRATION.md](./MIGRATION.md)。
+完整的分步指南见 [迁移指南](./MIGRATION.zh-CN.md)。
 
 ## CLI 参考
 
@@ -421,7 +421,7 @@ ptg --help | --version
 
 ## 致谢
 
-凭据生命周期设计（profile → 缓存令牌 → 有效性 → 刷新 → 回退登录，以及 `expires_at` 处理、profile 概念与 OAuth/E2E 拆分）**受** [eggplants/get-pixivpy-token (gppt)](https://github.com/eggplants/get-pixivpy-token) **启发**，后者为 MIT 许可。未复制任何 gppt 源码；Node.js 实现为原创。详见 [ACKNOWLEDGMENTS.md](./ACKNOWLEDGMENTS.md)。
+凭据生命周期设计（profile → 缓存令牌 → 有效性 → 刷新 → 回退登录，以及 `expires_at` 处理、profile 概念与 OAuth/E2E 拆分）**受** [eggplants/get-pixivpy-token (gppt)](https://github.com/eggplants/get-pixivpy-token) **启发**，后者为 MIT 许可。未复制任何 gppt 源码；Node.js 实现为原创。详见 [致谢](./ACKNOWLEDGMENTS.zh-CN.md)。
 
 ## 常见问题
 
@@ -442,6 +442,7 @@ ptg --help | --version
 - [Pixiv API 文档](https://www.pixiv.net/help/article/3629)
 - [Puppeteer 文档](https://pptr.dev/)
 - [gppt（可选互操作）](https://github.com/eggplants/get-pixivpy-token)
-- [迁移指南](./MIGRATION.md)
+- [迁移指南](./MIGRATION.zh-CN.md)
+- [致谢](./ACKNOWLEDGMENTS.zh-CN.md)
 
 如有问题，请提交 [Issue](https://github.com/redtidev1918/pixiv-token-getter/issues)。

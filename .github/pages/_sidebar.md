@@ -10,7 +10,7 @@
     - [gppt 互操作](README.zh-CN.md#gppt-互操作可选)
     - [网页 Cookie](README.zh-CN.md#网页-cookiephpsessid)
     - [代理](README.zh-CN.md#代理)
-    - [服务器 / CI](README.zh-CN.md#服务器--无头运行时cicdockerflyactions)
+    - [服务器 / CI](README.zh-CN.md#服务器--无头运行时cidockerflyactions)
   - [API](README.zh-CN.md#api)
   - [CLI 参考](README.zh-CN.md#cli-参考)
   - [安全](README.zh-CN.md#安全)
@@ -24,8 +24,10 @@
   - [Security](README.md#security)
   - [FAQ](README.md#faq)
 - 迁移与致谢 / Migration
-  - [迁移指南 (2.3 → 2.4)](MIGRATION.md)
-  - [致谢](ACKNOWLEDGMENTS.md)
+  - [迁移指南 (2.3 → 2.4)](MIGRATION.zh-CN.md)
+  - [致谢](ACKNOWLEDGMENTS.zh-CN.md)
+  - [Migration Guide](MIGRATION.md)
+  - [Acknowledgments](ACKNOWLEDGMENTS.md)
 - 项目
   - [npm](https://www.npmjs.com/package/pixiv-token-getter)
   - [Releases](https://github.com/redtidev1918/pixiv-token-getter/releases)

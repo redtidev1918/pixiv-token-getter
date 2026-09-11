@@ -1,5 +1,7 @@
 # Migration Guide
 
+[中文文档](./MIGRATION.zh-CN.md) | [English](./MIGRATION.md)
+
 **From `2.3.x` → `2.4.x`**
 
 `2.4.0` upgrades this package from a *one-shot token getter* into a **credential
