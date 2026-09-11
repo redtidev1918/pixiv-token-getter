@@ -1,6 +1,6 @@
 {
   "name": "pixiv-token-getter",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "description": "Node.js Pixiv credential manager and authentication facade - token cache, refresh-token lifecycle, profiles, PKCE OAuth + Puppeteer login, optional gppt interoperability. Library and CLI (ptg). TypeScript types included.",
   "main": "index.js",
   "types": "index.d.ts",
@@ -56,8 +56,8 @@
   "homepage": "https://redtidev1918.github.io/pixiv-token-getter/",
   "sideEffects": false,
   "dependencies": {
-    "puppeteer": "^25.9.0",
-    "axios": "^1.6.0"
+    "axios": "^1.6.0",
+    "puppeteer-core": "^25.9.0"
   },
   "engines": {
     "node": ">=22.12.0"
