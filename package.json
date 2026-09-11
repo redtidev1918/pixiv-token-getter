@@ -1,7 +1,7 @@
 {
   "name": "pixiv-token-getter",
-  "version": "2.3.0",
-  "description": "Get Pixiv API access & refresh tokens from Node.js - library and CLI (ptg) with PKCE OAuth login (interactive or headless). TypeScript types included.",
+  "version": "2.4.0",
+  "description": "Node.js Pixiv credential manager and authentication facade - token cache, refresh-token lifecycle, profiles, PKCE OAuth + Puppeteer login, optional gppt interoperability. Library and CLI (ptg). TypeScript types included.",
   "main": "index.js",
   "types": "index.d.ts",
   "exports": {
@@ -22,21 +22,27 @@
   },
   "scripts": {
     "start": "node cli.js",
+    "test": "node --test",
     "interactive": "node cli.js --interactive",
     "headless": "node cli.js --headless",
-    "example": "node examples/basic-usage.js"
+    "example": "node examples/basic-usage.js",
+    "example:lifecycle": "node examples/credential-lifecycle.js"
   },
   "keywords": [
     "pixiv",
     "token",
+    "credential-manager",
+    "refresh-token",
     "puppeteer",
     "login",
     "oauth",
+    "pkce",
     "cli",
     "authentication",
     "api",
     "sdk",
-    "pixiv-api"
+    "pixiv-api",
+    "gppt"
   ],
   "author": "redtidev1918",
   "license": "MIT",
@@ -62,6 +68,10 @@
     "index.js",
     "index.d.ts",
     "README.md",
+    "README.zh-CN.md",
+    "MIGRATION.md",
+    "ACKNOWLEDGMENTS.md",
+    "LICENSE",
     "examples/"
   ]
 }
