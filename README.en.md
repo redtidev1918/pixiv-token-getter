@@ -370,7 +370,7 @@ Two intentional differences from `2.3`:
 1. `DEFAULT_USER_DATA_DIR` is now `.../browser/default` (migrated automatically, nothing to do).
 2. The CLI **masks** tokens in its output instead of printing them; use `ptg token --show-secret` if you genuinely need the raw value.
 
-See [MIGRATION.md](./MIGRATION.md) for the full, step-by-step guide.
+See [MIGRATION.en.md](./MIGRATION.en.md) for the full, step-by-step guide.
 
 ## CLI reference
 
@@ -421,7 +421,7 @@ Add these to your `.gitignore`: `pixiv-token.json`, `*.token.json`, `.config/pix
 
 ## Credits
 
-The credential-lifecycle design (profile → cached token → validity → refresh → fallback login, plus `expires_at` handling, the profile concept and the OAuth/E2E split) was **inspired by** [eggplants/get-pixivpy-token (gppt)](https://github.com/eggplants/get-pixivpy-token), which is MIT-licensed. No gppt source code was copied; the Node.js implementation is original. See [ACKNOWLEDGMENTS.md](./ACKNOWLEDGMENTS.md).
+The credential-lifecycle design (profile → cached token → validity → refresh → fallback login, plus `expires_at` handling, the profile concept and the OAuth/E2E split) was **inspired by** [eggplants/get-pixivpy-token (gppt)](https://github.com/eggplants/get-pixivpy-token), which is MIT-licensed. No gppt source code was copied; the Node.js implementation is original. See [ACKNOWLEDGMENTS.en.md](./ACKNOWLEDGMENTS.en.md).
 
 ## FAQ
 
@@ -442,6 +442,6 @@ The credential-lifecycle design (profile → cached token → validity → refre
 - [Pixiv API Documentation](https://www.pixiv.net/help/article/3629)
 - [Puppeteer Documentation](https://pptr.dev/)
 - [gppt (optional interoperability)](https://github.com/eggplants/get-pixivpy-token)
-- [Migration guide](./MIGRATION.md)
+- [Migration guide](./MIGRATION.en.md)
 
 For issues, please submit an [Issue](https://github.com/redtidev1918/pixiv-token-getter/issues).

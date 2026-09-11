@@ -443,5 +443,6 @@ ptg --help | --version
 - [Puppeteer 文档](https://pptr.dev/)
 - [gppt（可选互操作）](https://github.com/eggplants/get-pixivpy-token)
 - [迁移指南](./MIGRATION.md)
+- [致谢](./ACKNOWLEDGMENTS.md)
 
 如有问题，请提交 [Issue](https://github.com/redtidev1918/pixiv-token-getter/issues)。

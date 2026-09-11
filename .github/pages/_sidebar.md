@@ -15,6 +15,7 @@
   - [API](/README.md#api)
   - [CLI 参考](/README.md#cli-参考)
   - [安全](/README.md#安全)
+  - [常见问题](/README.md#常见问题)
 - English
   - [Documentation](/README.en.md)
   - [📥 Download](/docs/en/download.md)
@@ -24,6 +25,8 @@
   - [CLI reference](/README.en.md#cli-reference)
   - [Security](/README.en.md#security)
   - [FAQ](/README.en.md#faq)
+  - [Migration guide](/MIGRATION.en.md)
+  - [Acknowledgments](/ACKNOWLEDGMENTS.en.md)
 - 迁移与致谢
   - [迁移指南 (2.3 → 2.4)](/MIGRATION.md)
   - [致谢](/ACKNOWLEDGMENTS.md)

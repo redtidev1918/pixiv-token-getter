@@ -70,7 +70,9 @@
     "README.md",
     "README.en.md",
     "MIGRATION.md",
+    "MIGRATION.en.md",
     "ACKNOWLEDGMENTS.md",
+    "ACKNOWLEDGMENTS.en.md",
     "LICENSE",
     "examples/"
   ]
