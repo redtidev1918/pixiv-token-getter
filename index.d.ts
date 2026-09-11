@@ -6,7 +6,7 @@
  *  - legacy one-shot helpers: `getTokenInteractive`, `getTokenHeadless`, ...
  */
 
-import type { Browser, Page } from 'puppeteer';
+import type { Browser, Page } from 'puppeteer-core';
 
 // ---------------------------------------------------------------------------
 // Core types
