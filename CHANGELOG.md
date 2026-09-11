@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.6.1](https://github.com/redtidev1918/pixiv-token-getter/compare/v2.6.0...v2.6.1) (2026-09-11)
+
+
+### Bug Fixes
+
+* **types:** declare findBrowserExecutable / browserNotFoundMessage ([#18](https://github.com/redtidev1918/pixiv-token-getter/issues/18)) ([1dcc3b4](https://github.com/redtidev1918/pixiv-token-getter/commit/1dcc3b44b103f1d387aa74310a74da40e6deb4a4))
+
 ## [2.6.0](https://github.com/redtidev1918/pixiv-token-getter/compare/v2.5.0...v2.6.0) (2026-09-11)
 
 
