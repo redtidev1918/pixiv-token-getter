@@ -71,7 +71,7 @@ for the default profile). We expand `~` ourselves, because gppt does not.
 
 ## Attribution in this repository
 
-- [`README.md`](./README.md) / [`README.zh-CN.md`](./README.zh-CN.md) — the Credits
+- [`README.md`](./README.md) / [`README.en.md`](./README.en.md) — the Credits
   section points here and to gppt.
 - [`LICENSE`](./LICENSE) — this project's own license (MIT), matching gppt's.
 
