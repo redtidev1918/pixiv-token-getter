@@ -428,6 +428,19 @@ export function collectWebCookies(
 ): Promise<Record<string, string>>;
 export declare const DEFAULT_USER_DATA_DIR: string;
 
+/**
+ * Resolve a usable system Chrome/Chromium executable.
+ *
+ * Order: explicit `executablePath` option -> PUPPETEER_EXECUTABLE_PATH ->
+ * platform-known install locations -> PATH lookup -> null.
+ */
+export function findBrowserExecutable(options?: {
+  executablePath?: string;
+}): string | null;
+
+/** User-facing guidance shown when no system browser can be located. */
+export function browserNotFoundMessage(): string;
+
 declare const _default: {
   getToken: typeof getToken;
   login: typeof login;
