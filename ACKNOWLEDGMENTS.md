@@ -1,6 +1,6 @@
 # 致谢
 
-[中文文档](./ACKNOWLEDGMENTS.zh-CN.md) | [English](./ACKNOWLEDGMENTS.md)
+**语言 / Language:** 中文 · [English](./ACKNOWLEDGMENTS.en.md)
 
 `pixiv-token-getter` 站在少数几个优秀开源项目的肩膀上。本文件记录了**我们借鉴了什么** —— 同样重要的是，也记录了**我们刻意没有做什么**。
 
@@ -52,7 +52,7 @@
 
 ## 本仓库中的归属说明
 
-- [`README.md`](./README.md) / [`README.zh-CN.md`](./README.zh-CN.md) —— 致谢章节指回此处与 gppt。
+- [`README.md`](./README.md) / [`README.en.md`](./README.en.md) —— 致谢章节指回此处与 gppt。
 - [`LICENSE`](./LICENSE) —— 本项目自身的许可证（MIT），与 gppt 一致。
 
 如果你认为此处存在归属错误，请提交一个
