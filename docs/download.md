@@ -1,12 +1,16 @@
+<!-- docsite-release-repo: redtidev1918/pixiv-token-getter -->
+<!-- docsite-release-tag: v2.6.1 -->
 # 📥 下载 pixiv-token-getter
 
-**语言 / Language:** 中文 · [English](/docs/en/download.md)
+**语言 / Language:** 中文 · [English](/en/download.md)
+
+<!-- docsite: generated from redtidev1918/pixiv-token-getter release v2.6.1; do not edit by hand -->
 
 本页由 GitHub Actions 在每次发版时**自动更新**，始终指向最新 Release。
 
-## 最新版本：`v2.4.0`（2026-09-11）
+## 最新版本：`v2.6.1`（2026-09-11）
 
-👉 [查看 Release 说明与校验和](https://github.com/redtidev1918/pixiv-token-getter/releases/tag/v2.4.0)
+👉 [查看 Release 说明与校验和](https://github.com/redtidev1918/pixiv-token-getter/releases/tag/v2.6.1)
 
 本包**只通过 npm 分发**，没有独立二进制或平台安装包。版本记录与发版元数据见 [Releases](https://github.com/redtidev1918/pixiv-token-getter/releases)。
 
@@ -51,4 +55,4 @@ node cli.js --help
 
 | 平台 | 文件 | 大小 | 下载 |
 |---|---|---|---|
-| 通用 | `RELEASE-METADATA.json` | 1 KB | [⬇️ 下载](https://github.com/redtidev1918/pixiv-token-getter/releases/download/v2.4.0/RELEASE-METADATA.json) |
+| 通用 | `RELEASE-METADATA.json` | 1 KB | [⬇️ 下载](https://github.com/redtidev1918/pixiv-token-getter/releases/download/v2.6.1/RELEASE-METADATA.json) |
