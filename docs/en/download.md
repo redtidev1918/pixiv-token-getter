@@ -2,7 +2,7 @@
 <!-- docsite-release-tag: v2.6.1 -->
 # 📥 Download pixiv-token-getter
 
-**Language / 语言:** [中文](/download.md) · English
+**Language / 语言:** [中文](/docs/download.md) · English
 
 <!-- docsite: generated from redtidev1918/pixiv-token-getter release v2.6.1; do not edit by hand -->
 
