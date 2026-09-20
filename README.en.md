@@ -110,16 +110,6 @@ That is the whole integration. `PixivFlow` (and any other Node consumer) only ne
 
 ## Security
 
-## Documentation
-
-This README only covers the entry points; guides, API, and CLI details live on the docs site
-<https://redtidev1918.github.io/pixiv-token-getter/>:
-
-| What you want | Where |
-| --- | --- |
-| Login, refresh, profiles, web cookies, proxies | [Guides](docs/en/GUIDES.md) |
-| Call it from code | [API](docs/en/API.md) |
-| Command-line flags | [CLI reference](docs/en/CLI.md) |
 - Secrets live in `tokens/<profile>.token.json` with **`0600`**; directories are **`0700`**.
 - Writes are atomic; a failed login/refresh **keeps the previous token file**.
 - Passwords are **never** persisted by default (`configure` stores non-secret preferences only).
@@ -130,6 +120,17 @@ This README only covers the entry points; guides, API, and CLI details live on t
 - On Windows there is no POSIX `chmod`: files inherit the private user profile directory ACL, which is why we keep state under `%USERPROFILE%`.
 
 Add these to your `.gitignore`: `pixiv-token.json`, `*.token.json`, `.config/pixiv-token-getter/`.
+
+## Documentation
+
+This README only covers the entry points; guides, API, and CLI details live on the docs site
+<https://redtidev1918.github.io/pixiv-token-getter/>:
+
+| What you want | Where |
+| --- | --- |
+| Login, refresh, profiles, web cookies, proxies | [Guides](docs/en/GUIDES.md) |
+| Call it from code | [API](docs/en/API.md) |
+| Command-line flags | [CLI reference](docs/en/CLI.md) |
 
 ## Requirements
 
