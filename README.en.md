@@ -10,6 +10,8 @@
 
 **Language / 语言:** [中文](README.md) · English
 
+📖 Full documentation: <https://redtidev1918.github.io/pixiv-token-getter/>
+
 ---
 
 ## What this is (and what changed)
