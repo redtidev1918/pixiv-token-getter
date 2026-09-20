@@ -1,12 +1,12 @@
 - Documentation
-  - [Documentation Home](/en/README.md)
-  - [📥 Download](/en/download.md)
-  - [Quick Start](/en/README.md#quick-start)
-  - [Guides](/en/README.md#guides)
-  - [API](/en/README.md#api)
-  - [CLI reference](/en/README.md#cli-reference)
-  - [Security](/en/README.md#security)
-  - [FAQ](/en/README.md#faq)
+  - [Documentation Home](/README.en.md)
+  - [📥 Download](/docs/en/download.md)
+  - [Quick Start](/README.en.md#quick-start)
+  - [Guides](/README.en.md#guides)
+  - [API](/README.en.md#api)
+  - [CLI reference](/README.en.md#cli-reference)
+  - [Security](/README.en.md#security)
+  - [FAQ](/README.en.md#faq)
 
 - 中文
   - [文档首页](/README.md)
