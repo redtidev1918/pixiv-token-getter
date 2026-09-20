@@ -1,4 +1,6 @@
 {
+  "name": "Pixiv Token Getter",
+  "emoji": "🔑",
   "navigation": {
     "allowSidebarAnchors": true,
     "allowCombinedLocales": true
