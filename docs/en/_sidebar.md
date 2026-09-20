@@ -2,9 +2,9 @@
   - [Documentation Home](/README.en.md)
   - [📥 Download](/docs/en/download.md)
   - [Quick Start](/README.en.md#quick-start)
-  - [Guides](/README.en.md#guides)
-  - [API](/README.en.md#api)
-  - [CLI reference](/README.en.md#cli-reference)
+  - [Guides](/docs/en/GUIDES.md)
+  - [API](/docs/en/API.md)
+  - [CLI reference](/docs/en/CLI.md)
   - [Security](/README.en.md#security)
   - [FAQ](/README.en.md#faq)
 
