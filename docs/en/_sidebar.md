@@ -1,0 +1,12 @@
+- Documentation
+  - [Documentation Home](/en/README.md)
+  - [📥 Download](/en/download.md)
+  - [Quick Start](/en/README.md#quick-start)
+  - [Guides](/en/README.md#guides)
+  - [API](/en/README.md#api)
+  - [CLI reference](/en/README.md#cli-reference)
+  - [Security](/en/README.md#security)
+  - [FAQ](/en/README.md#faq)
+
+- 中文
+  - [文档首页](/README.md)
