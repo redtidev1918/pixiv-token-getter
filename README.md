@@ -4,17 +4,17 @@
 
 **简称：** `ptg`（CLI 命令别名）
 
+**语言 / Language:** 中文 · [English](README.en.md)
+
+[完整文档](https://redtidev1918.github.io/pixiv-token-getter/)
+
 [![Node.js](https://img.shields.io/badge/Node.js-%3E%3D22.12.0-brightgreen)](https://nodejs.org/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Docs](https://img.shields.io/badge/Docs-文档站点-6366f1?style=flat-square)](https://redtidev1918.github.io/pixiv-token-getter/)
 
-**语言 / Language:** 中文 · [English](README.en.md)
-
-📖 [完整文档](https://redtidev1918.github.io/pixiv-token-getter/)
-
 ---
 
-## 这是什么（以及变化了什么）
+## 这是什么
 
 这个包以前是"一次性获取 token"的工具，现在是一个**凭据生命周期管理器**：
 
@@ -35,19 +35,28 @@ const { getToken } = require('pixiv-token-getter');
 const token = await getToken({ profile: 'default' });
 ```
 
+## 目录
+
+- [是什么](#是什么)
+- [安装](#安装)
+- [快速开始](#快速开始)
+- [安全](#安全)
+- [文档](#文档)
+- [常见问题](#常见问题)
+
 ## 特性
 
-- ✅ **凭据生命周期** —— `getToken()` 缓存 → 刷新 → 登录，并持久化绝对过期时间
-- ✅ **Refresh token 支持** —— `refreshToken()`、`refreshStoredToken()`，且**轮换安全**
-- ✅ **多 profile** —— `--profile main`、`--profile alt`；令牌、偏好与浏览器数据相互隔离
-- ✅ **原生 PKCE OAuth** —— 原有的第一方实现（保留并重构，而非替换）
-- ✅ **Puppeteer 浏览器登录** —— 支持交互式 *与* 自动化（`e2e`），可选 TOTP 二次验证
-- ✅ **持久化浏览器 profile** —— 通常多次运行之间保持已登录状态
-- ✅ **网页会话 Cookie** —— 为 Pixiv **网页**抓取捕获 `PHPSESSID`（仅原生 provider）
-- ✅ **gppt 互操作（可选）** —— 导入 gppt 凭据，**无需任何 Python 依赖**
-- ✅ **原子化、0600 权限的凭据存储** —— 写入失败绝不会截断一个可用的令牌
-- ✅ **稳定错误模型** —— 通过 `error.code` 分支处理，而非解析错误文案
-- ✅ **TypeScript 类型** —— 新 API 与旧 API 均有完整 `.d.ts`
+- **凭据生命周期** —— `getToken()` 缓存 → 刷新 → 登录，并持久化绝对过期时间
+- **Refresh token 支持** —— `refreshToken()`、`refreshStoredToken()`，且**轮换安全**
+- **多 profile** —— `--profile main`、`--profile alt`；令牌、偏好与浏览器数据相互隔离
+- **原生 PKCE OAuth** —— 原有的第一方实现（保留并重构，而非替换）
+- **Puppeteer 浏览器登录** —— 支持交互式 *与* 自动化（`e2e`），可选 TOTP 二次验证
+- **持久化浏览器 profile** —— 通常多次运行之间保持已登录状态
+- **网页会话 Cookie** —— 为 Pixiv **网页**抓取捕获 `PHPSESSID`（仅原生 provider）
+- **gppt 互操作（可选）** —— 导入 gppt 凭据，**无需任何 Python 依赖**
+- **原子化、0600 权限的凭据存储** —— 写入失败绝不会截断一个可用的令牌
+- **稳定错误模型** —— 通过 `error.code` 分支处理，而非解析错误文案
+- **TypeScript 类型** —— 新 API 与旧 API 均有完整 `.d.ts`
 
 ## 安装
 
@@ -110,16 +119,6 @@ const token = await getToken({
 
 ## 安全
 
-## 文档
-
-README 只留入口；用法、API 与命令细节在[文档站](https://redtidev1918.github.io/pixiv-token-getter/)：
-
-| 你想做什么 | 文档 |
-| --- | --- |
-| 登录、刷新、多 Profile、网页 Cookie、代理 | [使用指南](docs/USAGE.md) |
-| 在代码里调用 | [API](docs/API.md) |
-| 查命令行参数 | [CLI 参考](docs/CLI.md) |
-
 - 密钥保存在 `tokens/<profile>.token.json`，权限为 **`0600`**；目录为 **`0700`**。
 - 写入是原子的；登录 / 刷新失败会**保留原有的令牌文件**。
 - 默认**绝不**持久化密码（`configure` 只保存非敏感偏好）。
@@ -130,6 +129,16 @@ README 只留入口；用法、API 与命令细节在[文档站](https://redtide
 - Windows 上没有 POSIX `chmod`：文件继承用户私有目录的 ACL，因此我们将状态保存在 `%USERPROFILE%` 下。
 
 请将这些加入你的 `.gitignore`：`pixiv-token.json`、`*.token.json`、`.config/pixiv-token-getter/`。
+
+## 文档
+
+README 只留入口；用法、API 与命令细节在[文档站](https://redtidev1918.github.io/pixiv-token-getter/)：
+
+| 你想做什么 | 文档 |
+| --- | --- |
+| 登录、刷新、多 Profile、网页 Cookie、代理 | [使用指南](docs/USAGE.md) |
+| 在代码里调用 | [API](docs/API.md) |
+| 查命令行参数 | [CLI 参考](docs/CLI.md) |
 
 ## 要求
 
