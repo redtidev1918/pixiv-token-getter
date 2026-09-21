@@ -10,7 +10,7 @@
 
 **语言 / Language:** 中文 · [English](README.en.md)
 
-📖 完整文档：<https://redtidev1918.github.io/pixiv-token-getter/>
+📖 [完整文档](https://redtidev1918.github.io/pixiv-token-getter/)
 
 ---
 
@@ -112,7 +112,7 @@ const token = await getToken({
 
 ## 文档
 
-README 只留入口；用法、API 与命令细节在文档站 <https://redtidev1918.github.io/pixiv-token-getter/>：
+README 只留入口；用法、API 与命令细节在[文档站](https://redtidev1918.github.io/pixiv-token-getter/)：
 
 | 你想做什么 | 文档 |
 | --- | --- |

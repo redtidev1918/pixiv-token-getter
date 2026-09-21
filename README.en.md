@@ -10,7 +10,7 @@
 
 **Language / 语言:** [中文](README.md) · English
 
-📖 Full documentation: <https://redtidev1918.github.io/pixiv-token-getter/>
+📖 [Full documentation](https://redtidev1918.github.io/pixiv-token-getter/)
 
 ---
 
@@ -123,8 +123,8 @@ Add these to your `.gitignore`: `pixiv-token.json`, `*.token.json`, `.config/pix
 
 ## Documentation
 
-This README only covers the entry points; guides, API, and CLI details live on the docs site
-<https://redtidev1918.github.io/pixiv-token-getter/>:
+This README only covers the entry points; guides, API, and CLI details live on the
+[docs site](https://redtidev1918.github.io/pixiv-token-getter/):
 
 | What you want | Where |
 | --- | --- |
