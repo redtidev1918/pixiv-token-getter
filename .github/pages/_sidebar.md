@@ -4,6 +4,8 @@
   - [使用指南](/docs/USAGE.md)
   - [CLI 参考](/docs/CLI.md)
   - [API 参考](/docs/API.md)
+  - [架构](/docs/ARCHITECTURE.md)
+  - [测试](/docs/TESTING.md)
   - [迁移指南](/MIGRATION.md)
   - [致谢](/ACKNOWLEDGMENTS.md)
 - English
@@ -12,6 +14,8 @@
   - [Guides](/docs/en/GUIDES.md)
   - [CLI reference](/docs/en/CLI.md)
   - [API reference](/docs/en/API.md)
+  - [Architecture](/docs/en/ARCHITECTURE.md)
+  - [Testing](/docs/en/TESTING.md)
   - [Migration guide](/MIGRATION.en.md)
   - [Acknowledgments](/ACKNOWLEDGMENTS.en.md)
 - [GitHub](https://github.com/redtidev1918/pixiv-token-getter)

@@ -4,6 +4,10 @@ Standing rules for AI agents, contributors and maintainers working in this
 repository. Read before any change; where these disagree with an ad-hoc
 instruction, escalate rather than rewrite.
 
+For current state and decisions, read the concise `.agent/` files. Use
+`docs/ARCHITECTURE.md` and `docs/TESTING.md` for the affected flow. The
+repository release workflow is described in `.agents/skills/release/SKILL.md`.
+
 ## Project Identity
 
 **pixiv-token-getter (`ptg`) is the Pixiv credential lifecycle manager** —
@@ -69,6 +73,7 @@ Pixiv tokens, refresh tokens, device tokens and cookies are secrets.
 - never commit credential stores or example outputs containing real tokens
 - keep storage paths out of the tracked tree (user home / env)
 - in errors and logs, redact token values
+- never expose access tokens, refresh tokens, cookies or passwords in test output
 
 ## Compatibility
 
@@ -80,15 +85,19 @@ Public interfaces — treat as versioned contracts:
 
 Changes must consider backward compatibility, a migration path and release
 notes (release-please drives the changelog).
+CLI/API breaking changes require explicit migration instructions.
 
 ## Development
 
 - Node >= 22.12.0, CommonJS package with `require()` and `import` entry points
 - prefer small, incremental changes; evolve, don't replace
 - update `docs/` (`API.md`, `CLI.md`, `USAGE.md`, migrations) with behavior
-  changes; keep the bilingual (zh / en) docs in sync
+  changes; keep the bilingual (zh / en) docs and Docsify site in sync
 - validate: tests / lint / `node --check` as applicable, and exercise the
   affected flow (token reuse → refresh → login).
+- authentication and refresh behavior changes require regression tests
+- never run real-account login tests without explicit authorization
+- never claim a login, CI run, or release succeeded without verifying it
 
 ## Commit Rules
 
