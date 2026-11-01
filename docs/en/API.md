@@ -1,120 +1,97 @@
-## API
+# API reference
 
-### High-level (recommended)
+[中文](../API.md) · [Home](../../README.en.md) · [Guides](GUIDES.md)
 
-| Function | Description |
-| --- | --- |
-| `getToken(options?)` | cache → refresh → login, then persist |
-| `resolveToken(options?)` | like `getToken`, also returns `source` (`cache` / `refresh` / `login`) |
-| `login(options?)` | force a fresh login (`force: true`) and persist |
-| `refreshStoredToken(options?)` | refresh the stored token for a profile |
-| `refreshToken(refreshToken, options?)` | refresh an arbitrary refresh token |
-| `status(options?)` | inspect state — **never** contains secrets |
-| `logout(options?)` | remove the credential (`purge: true` also clears profile + browser data) |
-| `importGppt(options?)` | import a gppt credential |
-| `getProvider(id)` / `providerPlan(id)` | provider selection (advanced) |
+Requires Node.js >= 22.12.0. The package provides `require()` and `import` entry points; see the root `index.d.ts` for complete types.
+
+## Getting a token
 
 ```js
-const {
-  getToken, login, refreshToken, refreshStoredToken,
-  status, logout, importGppt,
-  loadProfile, saveProfile, listProfiles,
-  FileTokenStore, MemoryTokenStore,
-} = require('pixiv-token-getter');
+const { getToken, resolveToken, refreshStoredToken, status } =
+  require('pixiv-token-getter');
+
+const token = await getToken({ profile: 'main' });
+const result = await resolveToken({ profile: 'main' });
+console.log(result.source); // cache | refresh | login
+
+await refreshStoredToken({ profile: 'main' });
+const state = await status({ profile: 'main' }); // no raw secrets
 ```
 
-### Providers
+| Function | Behavior |
+| --- | --- |
+| `getToken(options?)` | Valid cache → refresh → login; returns `TokenInfo` |
+| `resolveToken(options?)` | Same lifecycle; returns `{ token, source, providerId }` |
+| `login(options?)` | Skip cache and refresh, then log in and save |
+| `refreshStoredToken(options?)` | Force a refresh even when the access token is valid |
+| `refreshToken(refreshToken, options?)` | Refresh against Pixiv without reading or writing profile storage |
+| `status(options?)` | Return state without secret values |
+| `logout({ profile?, purge? })` | Delete the token; `purge` also removes preferences and browser data |
+| `importGppt({ profile?, sourceProfile? })` | Import a gppt credential into ptg storage |
 
-```ts
-interface AuthProvider {
-  readonly id: string;
-  readonly methods: AuthMethod[];
-  login(options: LoginOptions): Promise<TokenInfo>;
-  refresh?(refreshToken: string, options?: RefreshOptions): Promise<TokenInfo>;
-  isAvailable?(): Promise<boolean>;
-}
-```
+Common `getToken` options:
 
-- `native` — Puppeteer + PKCE. Methods: `oauth` / `browser` / `e2e`. The only provider that can capture web cookies.
-- `gppt` — optional. Methods: `import` (read the token file) / `e2e` (run `gppt login`).
+| Option | Meaning |
+| --- | --- |
+| `profile` | Profile name; defaults to `default` |
+| `provider` | `native`, `gppt`, or `auto`; defaults to the profile preference |
+| `method` | `oauth` / `browser` / `e2e` / `import` |
+| `force` | Skip cache and refresh, then log in again |
+| `refreshOnly` | Never log in; actively refresh the stored token or fail |
+| `proxy` | Proxy URL; `false` disables proxying |
+| `skewMs` | Expiry safety margin; defaults to five minutes |
 
-**Fallback policy:** `provider: 'native'` or `'gppt'` uses exactly that provider — no implicit fallback. Only `provider: 'auto'` may try `[native, gppt]`, each **at most once**, and it stops on a definitive auth failure. There is no login storm.
+`native` is the default provider. Its `oauth` and `browser` methods are aliases that open a browser for user login; `e2e` fills in credentials automatically. `gppt` is optional. Only `auto` may try native and then gppt; selecting one provider never triggers an implicit fallback.
 
-### Token storage
-
-```ts
-interface TokenStore {
-  load(profile: string): Promise<TokenInfo | null>;
-  save(profile: string, token: TokenInfo): Promise<void>;
-  remove(profile: string): Promise<void>;
-}
-```
-
-`FileTokenStore` is the default. Writes are atomic (`write temp → fsync → rename → chmod 0600`), so an interrupted process can never leave an empty or half-written token file, and a failed save keeps the previous credential intact. `MemoryTokenStore` is provided for tests/ephemeral use.
-
-### `TokenInfo`
+## Token shape
 
 ```ts
 interface TokenInfo {
   access_token: string;
   refresh_token: string;
   expires_in: number;
-  expires_at?: string;   // absolute ISO-8601 WITH timezone — prefer this
-  obtained_at?: string;  // absolute ISO-8601 WITH timezone
-  token_type?: string;
-  scope?: string;
+  expires_at?: string;
+  obtained_at?: string;
   user?: { id?: string; name?: string; account?: string };
-  web_cookies?: Record<string, string>;  // native browser login only
+  web_cookies?: Record<string, string>;
   provider?: 'native' | 'gppt' | 'auto';
   method?: 'oauth' | 'browser' | 'e2e' | 'import';
-  last_refreshed_at?: string;
 }
 ```
 
-Helpers: `isTokenExpired(token, skewMs?)` (default skew **5 minutes**), `msUntilExpiry(token)`, `normalizeTokenInfo(raw)`.
+`expires_at` is an absolute timestamp with a timezone. Use `isTokenExpired(token, skewMs?)` or `msUntilExpiry(token)` to check expiry. Only native browser login can produce web cookies; gppt imports never fabricate them.
 
-### Errors
+## Profiles and storage
 
-Branch on `error.code` — never parse messages:
+`loadProfile(name?)`, `saveProfile(name, patch)`, `listProfiles()`, and `removeProfile(name?)` manage login preferences. `FileTokenStore` is the default token store; `MemoryTokenStore` is available for ephemeral use. File storage replaces tokens atomically and uses mode `0600` on POSIX systems. Query paths with helpers such as `paths.getConfigDir()` and `paths.getTokenFilePath(profile)`.
 
-| Class | `code` | Typical handling |
-| --- | --- | --- |
-| `AuthError` | `AUTH_ERROR` | base class |
-| `LoginError` | `LOGIN_ERROR` | ask the user to log in again |
-| `TokenExchangeError` | `TOKEN_EXCHANGE_ERROR` | retry with backoff |
-| `RefreshError` | `REFRESH_ERROR` | re-login required |
-| `ProviderUnavailableError` | `PROVIDER_UNAVAILABLE` | try another provider / install deps |
-| `ProfileError` | `PROFILE_ERROR` | fix config |
-| `TokenStoreError` | `TOKEN_STORE_ERROR` | disk/permission problem |
-| `TwoFactorRequiredError` | `TWO_FACTOR_REQUIRED` | prompt for a TOTP code |
+## Errors
+
+Branch on `error.code` or an error class, never message text:
+
+| Error class | code |
+| --- | --- |
+| `AuthError` | `AUTH_ERROR` |
+| `LoginError` | `LOGIN_ERROR` |
+| `TokenExchangeError` | `TOKEN_EXCHANGE_ERROR` |
+| `RefreshError` | `REFRESH_ERROR` |
+| `ProviderUnavailableError` | `PROVIDER_UNAVAILABLE` |
+| `ProfileError` | `PROFILE_ERROR` |
+| `TokenStoreError` | `TOKEN_STORE_ERROR` |
+| `TwoFactorRequiredError` | `TWO_FACTOR_REQUIRED` |
 
 ```js
-const { RefreshError } = require('pixiv-token-getter');
+const { getToken, RefreshError } = require('pixiv-token-getter');
 
 try {
   await getToken({ refreshOnly: true });
 } catch (error) {
-  if (error instanceof RefreshError) notifyUserToLogInAgain();
-  else throw error;
+  if (error instanceof RefreshError) {
+    // Supply a usable refresh token again.
+  } else {
+    throw error;
+  }
 }
 ```
 
-### Legacy API (still supported)
-
-Nothing was removed. These keep their original signatures:
-
-```js
-const {
-  getTokenInteractive, getTokenHeadless,
-  loginInteractive, loginHeadless,
-  collectWebCookies, DEFAULT_USER_DATA_DIR,
-} = require('pixiv-token-getter');
-```
-
-Two intentional differences from `2.3`:
-
-1. `DEFAULT_USER_DATA_DIR` is now `.../browser/default` (migrated automatically, nothing to do).
-2. The CLI **masks** tokens in its output instead of printing them; use `ptg token --show-secret` if you genuinely need the raw value.
-
-See [MIGRATION.en.md](./MIGRATION.en.md) for the full, step-by-step guide.
-
+Legacy `getTokenInteractive()`, `getTokenHeadless()`, `loginInteractive()`, and `loginHeadless()` remain available. Prefer the lifecycle API for new code; see the [migration guide](../../MIGRATION.en.md).

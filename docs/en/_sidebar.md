@@ -1,12 +1,12 @@
 - Documentation
-  - [Documentation Home](/README.en.md)
-  - [📥 Download](/docs/en/download.md)
-  - [Quick Start](/README.en.md#quick-start)
+  - [Home](/README.en.md)
+  - [Download](/docs/en/download.md)
   - [Guides](/docs/en/GUIDES.md)
-  - [API](/docs/en/API.md)
   - [CLI reference](/docs/en/CLI.md)
-  - [Security](/README.en.md#security)
-  - [FAQ](/README.en.md#faq)
-
+  - [API reference](/docs/en/API.md)
+  - [Migration guide](/MIGRATION.en.md)
+  - [Acknowledgments](/ACKNOWLEDGMENTS.en.md)
 - 中文
-  - [文档首页](/README.md)
+  - [首页](/README.md)
+  - [使用指南](/docs/USAGE.md)
+- [GitHub](https://github.com/redtidev1918/pixiv-token-getter)

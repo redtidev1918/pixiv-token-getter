@@ -15,6 +15,8 @@ npm install -g pixiv-token-getter
 ptg --help
 ```
 
+原生登录需要本机已有 Chrome/Chromium；找不到浏览器时可设置 `PUPPETEER_EXECUTABLE_PATH`。
+
 ## 从源码运行
 
 ```bash

@@ -176,6 +176,8 @@ def render_page(lang: str, display: str, base: str, payload: dict,
     rows = []
     for a in payload.get("assets", []):
         os_name, arch = platform_of(a["name"])
+        if lang == "en":
+            os_name = EN_OS.get(os_name, os_name)
         size = a.get("size", 0)
         size_s = f"{size / 1048576:.1f} MB" if size >= 1048576 else f"{size / 1024:.0f} KB"
         rows.append((os_name, arch, a["name"], size_s, a["browser_download_url"]))
@@ -264,21 +266,19 @@ def cmd_render(args) -> int:
     if args.check:
         return cmd_check(cfg, payload)
 
-    preview = None
-    pv = Path(cfg["previewFile"])
-    if pv.is_file() and pv.read_text(encoding="utf-8").strip():
-        preview = pv.read_text(encoding="utf-8").strip()
-
     langs = set(args.language or []) or None
     wrote = 0
-    first_lang = cfg["languages"][0]
     for lang, path in output_paths(cfg):
         if langs and lang not in langs:
             continue
         if not guard_stale_write(path, payload, cfg, args.force):
             continue
+        pv = Path(cfg["previewFile"])
+        if lang == "en":
+            pv = pv.parent / "en" / pv.name
+        preview = pv.read_text(encoding="utf-8").strip() if pv.is_file() else None
         body = render_page(lang, cfg["displayName"], cfg["linkBase"], payload,
-                           preview if lang == first_lang else None, cfg)
+                           preview, cfg)
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(body, encoding="utf-8")
         print(f"wrote {path} <- {repo} {tag}")

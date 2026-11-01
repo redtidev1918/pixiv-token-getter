@@ -1,120 +1,97 @@
-## API
+# API 参考
 
-### 高层 API（推荐）
+[English](en/API.md) · [首页](../README.md) · [使用指南](USAGE.md)
 
-| 函数 | 说明 |
-| --- | --- |
-| `getToken(options?)` | 缓存 → 刷新 → 登录，然后持久化 |
-| `resolveToken(options?)` | 同 `getToken`，额外返回 `source`（`cache` / `refresh` / `login`） |
-| `login(options?)` | 强制重新登录（`force: true`）并持久化 |
-| `refreshStoredToken(options?)` | 刷新某个 profile 已存储的令牌 |
-| `refreshToken(refreshToken, options?)` | 刷新任意 refresh token |
-| `status(options?)` | 查看状态 —— **绝不**包含密钥 |
-| `logout(options?)` | 删除凭据（`purge: true` 同时清除 profile 与浏览器数据） |
-| `importGppt(options?)` | 导入 gppt 凭据 |
-| `getProvider(id)` / `providerPlan(id)` | provider 选择（进阶） |
+Node.js >= 22.12.0；包同时提供 `require()` 和 `import` 入口，类型声明见仓库根目录的 `index.d.ts`。
+
+## 获取令牌
 
 ```js
-const {
-  getToken, login, refreshToken, refreshStoredToken,
-  status, logout, importGppt,
-  loadProfile, saveProfile, listProfiles,
-  FileTokenStore, MemoryTokenStore,
-} = require('pixiv-token-getter');
+const { getToken, resolveToken, refreshStoredToken, status } =
+  require('pixiv-token-getter');
+
+const token = await getToken({ profile: 'main' });
+const result = await resolveToken({ profile: 'main' });
+console.log(result.source); // cache | refresh | login
+
+await refreshStoredToken({ profile: 'main' });
+const state = await status({ profile: 'main' }); // 不含原始密钥
 ```
 
-### Provider
+| 函数 | 行为 |
+| --- | --- |
+| `getToken(options?)` | 有效缓存 → 刷新 → 登录；返回 `TokenInfo` |
+| `resolveToken(options?)` | 同上，返回 `{ token, source, providerId }` |
+| `login(options?)` | 跳过缓存与刷新，强制登录并保存 |
+| `refreshStoredToken(options?)` | 强制刷新已保存的令牌，即使 access token 仍有效 |
+| `refreshToken(refreshToken, options?)` | 仅向 Pixiv 刷新；不读写 profile 存储 |
+| `status(options?)` | 返回不含密钥的状态 |
+| `logout({ profile?, purge? })` | 删除令牌；`purge` 还删除偏好和浏览器数据 |
+| `importGppt({ profile?, sourceProfile? })` | 将 gppt 凭据导入 ptg 存储 |
 
-```ts
-interface AuthProvider {
-  readonly id: string;
-  readonly methods: AuthMethod[];
-  login(options: LoginOptions): Promise<TokenInfo>;
-  refresh?(refreshToken: string, options?: RefreshOptions): Promise<TokenInfo>;
-  isAvailable?(): Promise<boolean>;
-}
-```
+常用 `getToken` 选项：
 
-- `native` —— Puppeteer + PKCE。方法：`oauth` / `browser` / `e2e`。唯一能捕获网页 cookie 的 provider。
-- `gppt` —— 可选。方法：`import`（读取令牌文件）/ `e2e`（运行 `gppt login`）。
+| 选项 | 含义 |
+| --- | --- |
+| `profile` | profile 名，默认 `default` |
+| `provider` | `native`、`gppt` 或 `auto`；默认使用 profile 偏好 |
+| `method` | `oauth` / `browser` / `e2e` / `import` |
+| `force` | 跳过缓存与刷新，重新登录 |
+| `refreshOnly` | 不登录；主动刷新已保存的令牌，缺失或失败时报错 |
+| `proxy` | 代理 URL；`false` 禁用代理 |
+| `skewMs` | 过期安全余量，默认 5 分钟 |
 
-**回退策略：** `provider: 'native'` 或 `'gppt'` 只使用该 provider —— 没有隐式回退。只有 `provider: 'auto'` 才会依次尝试 `[native, gppt]`，每个**至多一次**，并在确定的认证失败时停止。不会出现登录风暴。
+`native` 是默认 provider。其 `oauth` 与 `browser` 方法等价，打开浏览器让用户登录；`e2e` 自动填写凭据。`gppt` 是可选 provider。指定 `auto` 时才可能按 native、gppt 顺序尝试；明确指定单一 provider 不会隐式回退。
 
-### 令牌存储
-
-```ts
-interface TokenStore {
-  load(profile: string): Promise<TokenInfo | null>;
-  save(profile: string, token: TokenInfo): Promise<void>;
-  remove(profile: string): Promise<void>;
-}
-```
-
-`FileTokenStore` 是默认实现。写入是原子的（`写临时文件 → fsync → rename → chmod 0600`），因此被中断的进程绝不会留下空或写了一半的令牌文件，保存失败也会保留原凭据。`MemoryTokenStore` 用于测试 / 临时场景。
-
-### `TokenInfo`
+## 令牌形状
 
 ```ts
 interface TokenInfo {
   access_token: string;
   refresh_token: string;
   expires_in: number;
-  expires_at?: string;   // 带时区的绝对 ISO-8601 —— 优先使用
-  obtained_at?: string;  // 带时区的绝对 ISO-8601
-  token_type?: string;
-  scope?: string;
+  expires_at?: string;
+  obtained_at?: string;
   user?: { id?: string; name?: string; account?: string };
-  web_cookies?: Record<string, string>;  // 仅原生浏览器登录
+  web_cookies?: Record<string, string>;
   provider?: 'native' | 'gppt' | 'auto';
   method?: 'oauth' | 'browser' | 'e2e' | 'import';
-  last_refreshed_at?: string;
 }
 ```
 
-辅助函数：`isTokenExpired(token, skewMs?)`（默认安全余量 **5 分钟**）、`msUntilExpiry(token)`、`normalizeTokenInfo(raw)`。
+`expires_at` 是带时区的绝对过期时间；使用 `isTokenExpired(token, skewMs?)` 或 `msUntilExpiry(token)` 判断有效期。网页 Cookie 只可能来自原生浏览器登录，gppt 导入不会伪造。
 
-### 错误
+## Profile 与存储
 
-通过 `error.code` 分支处理 —— 不要解析文案：
+`loadProfile(name?)`、`saveProfile(name, patch)`、`listProfiles()`、`removeProfile(name?)` 管理登录偏好。`FileTokenStore` 是默认令牌存储；`MemoryTokenStore` 可用于临时场景。文件存储原子替换令牌，POSIX 系统上使用 `0600` 权限。存储路径可由 `paths.getConfigDir()`、`paths.getTokenFilePath(profile)` 等辅助函数查询。
 
-| 类 | `code` | 典型处理 |
-| --- | --- | --- |
-| `AuthError` | `AUTH_ERROR` | 基类 |
-| `LoginError` | `LOGIN_ERROR` | 提示用户重新登录 |
-| `TokenExchangeError` | `TOKEN_EXCHANGE_ERROR` | 退避重试 |
-| `RefreshError` | `REFRESH_ERROR` | 需要重新登录 |
-| `ProviderUnavailableError` | `PROVIDER_UNAVAILABLE` | 换 provider / 安装依赖 |
-| `ProfileError` | `PROFILE_ERROR` | 修正配置 |
-| `TokenStoreError` | `TOKEN_STORE_ERROR` | 磁盘 / 权限问题 |
-| `TwoFactorRequiredError` | `TWO_FACTOR_REQUIRED` | 提示输入 TOTP 验证码 |
+## 错误处理
+
+通过 `error.code` 或错误类判断，不要解析错误文案：
+
+| 错误类 | code |
+| --- | --- |
+| `AuthError` | `AUTH_ERROR` |
+| `LoginError` | `LOGIN_ERROR` |
+| `TokenExchangeError` | `TOKEN_EXCHANGE_ERROR` |
+| `RefreshError` | `REFRESH_ERROR` |
+| `ProviderUnavailableError` | `PROVIDER_UNAVAILABLE` |
+| `ProfileError` | `PROFILE_ERROR` |
+| `TokenStoreError` | `TOKEN_STORE_ERROR` |
+| `TwoFactorRequiredError` | `TWO_FACTOR_REQUIRED` |
 
 ```js
-const { RefreshError } = require('pixiv-token-getter');
+const { getToken, RefreshError } = require('pixiv-token-getter');
 
 try {
   await getToken({ refreshOnly: true });
 } catch (error) {
-  if (error instanceof RefreshError) notifyUserToLogInAgain();
-  else throw error;
+  if (error instanceof RefreshError) {
+    // 需要重新提供可用的 refresh token。
+  } else {
+    throw error;
+  }
 }
 ```
 
-### 旧 API（仍然支持）
-
-没有删除任何东西。以下函数保持原有签名：
-
-```js
-const {
-  getTokenInteractive, getTokenHeadless,
-  loginInteractive, loginHeadless,
-  collectWebCookies, DEFAULT_USER_DATA_DIR,
-} = require('pixiv-token-getter');
-```
-
-与 `2.3` 有两处有意的差异：
-
-1. `DEFAULT_USER_DATA_DIR` 现在是 `.../browser/default`（自动迁移，无需操作）。
-2. CLI 在输出中**遮蔽**令牌，而非直接打印；如确实需要原始值，请使用 `ptg token --show-secret`。
-
-完整的分步指南见 [MIGRATION.md](./MIGRATION.md)。
-
+旧版 `getTokenInteractive()`、`getTokenHeadless()`、`loginInteractive()` 和 `loginHeadless()` 仍可用；新代码优先使用生命周期 API。升级细节见[迁移指南](../MIGRATION.md)。
