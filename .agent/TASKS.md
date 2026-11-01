@@ -1,7 +1,3 @@
 # Local tasks
 
-- [ ] Verify CI on the gppt removal commit.
-- [ ] Confirm the release version and publication through ReleaseGraph.
-- [ ] Check the deployed Chinese and English documentation pages.
-
-Use GitHub Issues for larger work; keep only immediate release checks here.
+No immediate release tasks. Track future feature work in GitHub Issues; keep this file limited to active cross-session checks.

@@ -1,5 +1,3 @@
 # Current plan
 
-1. Keep native authentication and stored-token migration covered by offline regression tests.
-2. Publish the breaking release through the repository release workflow after CI passes.
-3. Verify the published package and Docsify site before recording completion here.
+No active implementation phase. For the next authentication change, cover cache reuse, refresh, and login with offline regression tests before updating the bilingual docs and release notes.

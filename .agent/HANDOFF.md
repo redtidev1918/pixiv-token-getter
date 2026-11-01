@@ -1,5 +1,5 @@
 # Handoff
 
-- Latest feature commit: `7127f72` removes gppt integration. `MIGRATION.md` and `MIGRATION.en.md` explain the breaking change.
-- Offline regression: `npm test` passed 119 tests. No real Pixiv account login was run.
-- Next: verify CI and release workflow results, then update `STATUS.md` and `TASKS.md` with evidence.
+- `7127f72` removed gppt integration; `7564b72` added lightweight Agent guidance. Release PR [#27](https://github.com/redtidev1918/pixiv-token-getter/pull/27) produced v3.0.0.
+- Local `npm test` passed 119 tests; main CI, Pages deployment, and release workflow passed. npm reports version 3.0.0.
+- No real-account login was run. `MIGRATION.md` and `MIGRATION.en.md` explain the breaking change.
