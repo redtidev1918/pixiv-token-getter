@@ -72,13 +72,21 @@ await getToken({ proxy: false }); // disable proxying
 
 ## Importing a gppt credential
 
-If you already use [gppt](https://github.com/eggplants/get-pixivpy-token), ptg can read its token file without running Python:
+gppt is a [separate Python tool](https://github.com/eggplants/get-pixivpy-token), **not a ptg dependency**. Leaving it uninstalled does not affect native `ptg login`, `ptg refresh`, or the library's default `getToken()` flow.
+
+| Operation | Requires Python / gppt? |
+| --- | --- |
+| Native login, caching, refresh | No |
+| `ptg import gppt` reads an existing token file | Does not run Python; the file must already exist |
+| `ptg login --provider gppt --method e2e` delegates login to gppt | Yes, install Python and gppt |
+
+If you already have a gppt token file, import it directly:
 
 ```sh
 ptg import gppt --profile main --source-profile default
 ```
 
-Install gppt separately to run `gppt login`; `ptg login --provider gppt --method e2e` delegates to it. ptg reads the credential file instead of parsing gppt's terminal output. `GPPT_CONFIG_DIR` selects gppt's config directory.
+ptg reads the credential file instead of parsing gppt's terminal output. `GPPT_CONFIG_DIR` selects gppt's config directory.
 
 ## Older versions
 

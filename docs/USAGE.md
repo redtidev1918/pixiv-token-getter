@@ -72,13 +72,21 @@ await getToken({ proxy: false }); // 禁用代理
 
 ## gppt 凭据导入
 
-若已使用 [gppt](https://github.com/eggplants/get-pixivpy-token)，可读取其令牌文件，无需在 ptg 中执行 Python：
+gppt 是[独立的 Python 工具](https://github.com/eggplants/get-pixivpy-token)，**不是 ptg 的依赖**。不安装它不会影响 `ptg login`、`ptg refresh` 或库的 `getToken()` 原生流程。
+
+| 操作 | 需要 Python / gppt 吗？ |
+| --- | --- |
+| 原生登录、缓存、刷新 | 不需要 |
+| `ptg import gppt` 读取已有令牌文件 | 不需要运行 Python；需要先有该文件 |
+| `ptg login --provider gppt --method e2e` 委托 gppt 登录 | 需要安装 Python 和 gppt |
+
+如果已经有 gppt 令牌文件，可以直接导入：
 
 ```sh
 ptg import gppt --profile main --source-profile default
 ```
 
-`gppt login` 需要自行安装 gppt；`ptg login --provider gppt --method e2e` 会委托它运行。ptg 不解析 gppt 的终端输出，而是读取其凭据文件。`GPPT_CONFIG_DIR` 可指定 gppt 配置目录。
+ptg 不解析 gppt 的终端输出，而是读取其凭据文件。`GPPT_CONFIG_DIR` 可指定 gppt 配置目录。
 
 ## 旧版本
 

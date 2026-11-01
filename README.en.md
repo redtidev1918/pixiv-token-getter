@@ -18,6 +18,8 @@ For the `ptg` command:
 npm install -g pixiv-token-getter
 ```
 
+**Neither Python nor gppt is required.** Without them, native login, token caching, and refresh work normally. Python is needed only if you ask ptg to run `gppt login`; importing an existing gppt token file does not run Python. See the [guides](docs/en/GUIDES.md#importing-a-gppt-credential).
+
 ## Quick start
 
 ```sh
@@ -60,4 +62,4 @@ The CLI masks tokens and cookies by default. `ptg token --show-secret` reveals t
 | Functions, types, and errors | [API reference](docs/en/API.md) |
 | Upgrade from older versions | [Migration guide](MIGRATION.en.md) |
 
-`gppt` is optional interoperability; normal use requires no Python. Report problems in [Issues](https://github.com/redtidev1918/pixiv-token-getter/issues).
+Report problems in [Issues](https://github.com/redtidev1918/pixiv-token-getter/issues).
