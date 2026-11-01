@@ -13,10 +13,10 @@ import type { Browser, Page } from 'puppeteer-core';
 // ---------------------------------------------------------------------------
 
 /** Provider identifiers. */
-export type ProviderId = 'native' | 'gppt' | 'auto';
+export type ProviderId = 'native';
 
 /** Login methods. `oauth` and `browser` are aliases (interactive PKCE browser login). */
-export type AuthMethod = 'oauth' | 'browser' | 'e2e' | 'import';
+export type AuthMethod = 'oauth' | 'browser' | 'e2e';
 
 /** User information returned by the token endpoint. */
 export interface UserInfo {
@@ -46,8 +46,7 @@ export interface TokenInfo {
   scope?: string;
   user?: UserInfo;
   /**
-   * Pixiv **web session** cookies (e.g. PHPSESSID). Only the native browser
-   * provider produces these; a gppt-imported token never has them.
+   * Pixiv **web session** cookies (e.g. PHPSESSID), captured by browser login.
    */
   web_cookies?: Record<string, string>;
   provider?: ProviderId;
@@ -111,8 +110,6 @@ export interface LoginOptions {
   onPageReady?: (page: Page, url: string) => void;
   /** Injectable HTTP transport (testing / custom networking) */
   transport?: (request: HttpTransportRequest) => Promise<HttpTransportResponse>;
-  /** Which gppt profile to read from for the gppt provider */
-  sourceProfile?: string;
   /** Internal: used by the CLI to stream events */
   onEvent?: (event: { type: string; [key: string]: any }) => void;
 }
@@ -312,7 +309,6 @@ export function defaultProfile(name?: string): Profile;
 
 export declare const providers: {
   native: AuthProvider;
-  gppt: AuthProvider;
   getProvider(id: string): AuthProvider;
   providerPlan(id?: string): AuthProvider[];
   loginWithFallback(options?: LoginOptions): Promise<{ token: TokenInfo; providerId: string; attempts: string[] }>;
@@ -321,26 +317,6 @@ export declare function getProvider(id: string): AuthProvider;
 export declare function providerPlan(id?: string): AuthProvider[];
 export declare const PROVIDER_IDS: ProviderId[];
 export declare const AUTH_METHODS: AuthMethod[];
-
-/** gppt interoperability namespace. */
-export declare const gppt: {
-  id: 'gppt';
-  methods: AuthMethod[];
-  isAvailable(options?: { force?: boolean }): Promise<boolean>;
-  login(options?: LoginOptions & { sourceProfile?: string }): Promise<TokenInfo>;
-  refresh(refreshToken: string, options?: RefreshOptions): Promise<TokenInfo>;
-  resolveGpptConfigDir(env?: NodeJS.ProcessEnv): string;
-  findGpptTokenFile(profile?: string, env?: NodeJS.ProcessEnv): string | null;
-  readGpptTokenFile(profile?: string, env?: NodeJS.ProcessEnv): { file: string; raw: any };
-  normalizeGpptToken(raw: any): TokenInfo;
-};
-
-/** Import an existing gppt credential into this package's store. */
-export function importGppt(options?: {
-  profile?: string;
-  sourceProfile?: string;
-  tokenStore?: TokenStore;
-}): Promise<TokenInfo>;
 
 // ---------------------------------------------------------------------------
 // Token utilities
@@ -448,7 +424,6 @@ declare const _default: {
   refreshStoredToken: typeof refreshStoredToken;
   status: typeof status;
   logout: typeof logout;
-  importGppt: typeof importGppt;
   getTokenInteractive: typeof getTokenInteractive;
   getTokenHeadless: typeof getTokenHeadless;
 };

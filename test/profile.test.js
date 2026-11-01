@@ -29,17 +29,17 @@ test('profile patches are persisted and merged', async (t) => {
   const temp = useTempConfigDir();
   t.after(temp.cleanup);
 
-  await saveProfile('main', { provider: 'gppt', method: 'import' });
+  await saveProfile('main', { provider: 'native', method: 'browser' });
   const second = await saveProfile('main', { proxy: 'http://127.0.0.1:8080' });
 
-  assert.equal(second.provider, 'gppt');
-  assert.equal(second.method, 'import');
+  assert.equal(second.provider, 'native');
+  assert.equal(second.method, 'browser');
   assert.equal(second.proxy, 'http://127.0.0.1:8080');
 
   const reloaded = await loadProfile('main');
   assert.deepEqual(
     { provider: reloaded.provider, method: reloaded.method, proxy: reloaded.proxy },
-    { provider: 'gppt', method: 'import', proxy: 'http://127.0.0.1:8080' }
+    { provider: 'native', method: 'browser', proxy: 'http://127.0.0.1:8080' }
   );
 });
 
@@ -48,19 +48,36 @@ test('multiple profiles stay independent', async (t) => {
   t.after(temp.cleanup);
 
   await saveProfile('main', { provider: 'native' });
-  await saveProfile('alt', { provider: 'gppt' });
+  await saveProfile('alt', { method: 'e2e' });
 
   assert.deepEqual(await listProfiles(), ['alt', 'main']);
   assert.equal((await loadProfile('main')).provider, 'native');
-  assert.equal((await loadProfile('alt')).provider, 'gppt');
+  assert.equal((await loadProfile('alt')).method, 'e2e');
 });
 
 test('unsupported provider / method values are rejected', async (t) => {
   const temp = useTempConfigDir();
   t.after(temp.cleanup);
 
-  await assert.rejects(() => saveProfile('main', { provider: 'python' }), ProfileError);
+  for (const provider of ['python', 'gppt', 'auto']) {
+    await assert.rejects(() => saveProfile('main', { provider }), ProfileError);
+  }
+  await assert.rejects(() => saveProfile('main', { method: 'import' }), ProfileError);
   await assert.rejects(() => saveProfile('main', { method: 'telepathy' }), ProfileError);
+});
+
+test('legacy profile preferences migrate on read and can be saved', async (t) => {
+  const temp = useTempConfigDir();
+  t.after(temp.cleanup);
+  const file = path.join(temp.dir, 'profiles', 'main.json');
+  fs.mkdirSync(path.dirname(file), { recursive: true });
+  fs.writeFileSync(file, JSON.stringify({ name: 'main', provider: 'gppt', method: 'import' }));
+  const profile = await loadProfile('main');
+  assert.equal(profile.provider, 'native');
+  assert.equal(profile.method, 'oauth');
+  assert.match(fs.readFileSync(file, 'utf8'), /gppt/);
+  await saveProfile('main', { proxy: 'http://127.0.0.1:8080' });
+  assert.doesNotMatch(fs.readFileSync(file, 'utf8'), /gppt|import/);
 });
 
 test('profile names are validated (no path traversal)', async (t) => {

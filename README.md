@@ -18,7 +18,7 @@ npm install pixiv-token-getter
 npm install -g pixiv-token-getter
 ```
 
-**无需安装 Python 或 gppt。** 不安装它们不会影响原生登录、令牌缓存与刷新。只有选择让 ptg 运行 `gppt login` 时才需要 Python；导入已有的 gppt 令牌文件也不需要运行 Python。详见[使用指南](docs/USAGE.md#gppt-凭据导入)。
+**只需 Node.js，不依赖 Python。** 原生登录、缓存和刷新都由本包完成。旧配置升级见[迁移指南](MIGRATION.md)。
 
 ## 快速开始
 
@@ -57,7 +57,7 @@ CLI 默认遮蔽令牌和 Cookie；`ptg token --show-secret` 会显示原值，�
 
 | 需求 | 文档 |
 | --- | --- |
-| 登录方式、profile、代理、CI、gppt | [使用指南](docs/USAGE.md) |
+| 登录方式、profile、代理、CI | [使用指南](docs/USAGE.md) |
 | 命令与退出码 | [CLI 参考](docs/CLI.md) |
 | 函数、类型与错误 | [API 参考](docs/API.md) |
 | 从旧版本升级 | [迁移指南](MIGRATION.md) |

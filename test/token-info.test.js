@@ -103,7 +103,7 @@ test('normalizeTokenInfo produces the documented shape', () => {
   });
 });
 
-test('normalizeTokenInfo accepts gppt flattened user fields', () => {
+test('normalizeTokenInfo accepts legacy flattened user fields', () => {
   const normalized = normalizeTokenInfo({
     access_token: 'a',
     refresh_token: 'r',

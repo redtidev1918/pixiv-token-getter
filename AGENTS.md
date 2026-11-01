@@ -8,7 +8,7 @@ instruction, escalate rather than rewrite.
 
 **pixiv-token-getter (`ptg`) is the Pixiv credential lifecycle manager** —
 a Node.js library + CLI that obtains, caches, refreshes and stores Pixiv
-OAuth tokens, and drives browser / native PKCE / gppt login flows.
+OAuth tokens, and drives native PKCE and browser login flows.
 
 It is the ecosystem's **authentication facade**. It does not download,
 schedule or publish anything — callers (PixivFlow, TelePost executor, CI)
@@ -35,7 +35,7 @@ CLI / API consumer
         v
  token lifecycle (refresh / cache / atomic store)
         |
-        +-- auth providers: native PKCE / puppeteer browser / gppt
+        +-- native PKCE / puppeteer browser login
         +-- profile store (multiple Pixiv accounts)
         +-- proxy support
 ```
@@ -52,7 +52,7 @@ Allowed:
 
 - OAuth / PKCE / token-exchange / TOTP logic
 - token caching, refresh, atomic persistence, multi-profile management
-- login flows (native browser, puppeteer, gppt interop)
+- login flows (native browser and puppeteer)
 - proxy handling for auth traffic
 
 Must not:
@@ -83,7 +83,7 @@ notes (release-please drives the changelog).
 
 ## Development
 
-- Node >= 22.12.0, ESM
+- Node >= 22.12.0, CommonJS package with `require()` and `import` entry points
 - prefer small, incremental changes; evolve, don't replace
 - update `docs/` (`API.md`, `CLI.md`, `USAGE.md`, migrations) with behavior
   changes; keep the bilingual (zh / en) docs in sync

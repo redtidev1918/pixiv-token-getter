@@ -18,9 +18,8 @@ ptg status
 | --- | --- | --- |
 | `native` (default) | `oauth` / `browser` | Open a browser for the user to log in; the names are aliases |
 | `native` | `e2e` | Fill in username and password automatically; optional TOTP code |
-| `gppt` (optional) | `import` / `e2e` | Read a gppt credential or delegate login to gppt |
 
-Native login uses an installed Chrome/Chromium browser; it never downloads one. Set `PUPPETEER_EXECUTABLE_PATH=/path/to/chrome` if no browser is found. Python is unnecessary for the core library; gppt is optional interoperability.
+Native login uses an installed Chrome/Chromium browser; it never downloads one. Set `PUPPETEER_EXECUTABLE_PATH=/path/to/chrome` if no browser is found. No Python runtime is required.
 
 ## Profiles and storage
 
@@ -54,7 +53,7 @@ It fails when the refresh token is missing or refresh fails. Ordinary `getToken(
 
 ## Web cookies
 
-The OAuth `access_token` serves the Pixiv App API. `web_cookies.PHPSESSID` is a Pixiv website session cookie. Only native browser login can capture web cookies. gppt imports omit the field; refresh preserves any cookie already stored. Treat both credentials as secrets: do not print or commit them.
+The OAuth `access_token` serves the Pixiv App API. `web_cookies.PHPSESSID` is a Pixiv website session cookie. Only native browser login can capture web cookies. Refresh preserves any cookie already stored. Treat both credentials as secrets: do not print or commit them.
 
 ## Proxies
 
@@ -69,24 +68,6 @@ ptg login --proxy=http://127.0.0.1:8080
 await getToken({ proxy: 'http://127.0.0.1:8080' });
 await getToken({ proxy: false }); // disable proxying
 ```
-
-## Importing a gppt credential
-
-gppt is a [separate Python tool](https://github.com/eggplants/get-pixivpy-token), **not a ptg dependency**. Leaving it uninstalled does not affect native `ptg login`, `ptg refresh`, or the library's default `getToken()` flow.
-
-| Operation | Requires Python / gppt? |
-| --- | --- |
-| Native login, caching, refresh | No |
-| `ptg import gppt` reads an existing token file | Does not run Python; the file must already exist |
-| `ptg login --provider gppt --method e2e` delegates login to gppt | Yes, install Python and gppt |
-
-If you already have a gppt token file, import it directly:
-
-```sh
-ptg import gppt --profile main --source-profile default
-```
-
-ptg reads the credential file instead of parsing gppt's terminal output. `GPPT_CONFIG_DIR` selects gppt's config directory.
 
 ## Older versions
 

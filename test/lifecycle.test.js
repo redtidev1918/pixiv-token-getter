@@ -82,7 +82,7 @@ test('an expired cached token triggers a refresh and is persisted', async (t) =>
   const result = await lifecycle.resolveToken({
     profile: 'default',
     store,
-    provider: 'fake',
+    provider: 'native',
     transport,
   });
 
@@ -106,9 +106,26 @@ test('refresh-token rotation is persisted (new refresh token is stored)', async 
   );
 
   const transport = okTransport(rawTokenResponse({ refresh_token: 'NEW-ROTATE' }));
-  await lifecycle.getToken({ profile: 'default', store, provider: 'fake', transport });
+  await lifecycle.getToken({ profile: 'default', store, provider: 'native', transport });
 
   assert.equal((await store.load('default')).refresh_token, 'NEW-ROTATE');
+});
+
+test('a legacy gppt token refreshes through native without login', async (t) => {
+  const temp = useTempConfigDir();
+  t.after(temp.cleanup);
+  const store = new MemoryTokenStore();
+  await store.save('default', storedToken({
+    provider: 'gppt', method: 'import', expires_at: new Date(0).toISOString(),
+  }));
+  const result = await lifecycle.resolveToken({
+    profile: 'default', store, refreshOnly: true,
+    transport: okTransport(rawTokenResponse({ access_token: 'migrated', refresh_token: '' })),
+  });
+  assert.equal(result.source, 'refresh');
+  assert.equal(result.providerId, 'native');
+  assert.equal(result.token.method, 'oauth');
+  assert.equal((await store.load('default')).refresh_token, 'cached-refresh');
 });
 
 test('refresh failures fall through to a login and never destroy the old token', async (t) => {
@@ -239,7 +256,7 @@ test('web cookies survive a refresh (refresh responses carry none)', async (t) =
   const token = await lifecycle.getToken({
     profile: 'default',
     store,
-    provider: 'fake',
+    provider: 'native',
     transport: okTransport(),
   });
 
@@ -298,7 +315,7 @@ test('a token inside the skew window is refreshed rather than reused', async (t)
   const result = await lifecycle.resolveToken({
     profile: 'default',
     store,
-    provider: 'fake',
+    provider: 'native',
     transport: okTransport(rawTokenResponse({ access_token: 'refreshed-early' })),
   });
 

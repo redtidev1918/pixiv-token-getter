@@ -10,10 +10,10 @@ test('no arguments defaults to an interactive login', () => {
 });
 
 test('new command interface parses provider / method / profile', () => {
-  const parsed = parseArgs(['login', '--provider', 'gppt', '--method', 'import', '--profile', 'main']);
+  const parsed = parseArgs(['login', '--provider', 'native', '--method', 'oauth', '--profile', 'main']);
   assert.equal(parsed.command, 'login');
-  assert.equal(parsed.options.provider, 'gppt');
-  assert.equal(parsed.options.method, 'import');
+  assert.equal(parsed.options.provider, 'native');
+  assert.equal(parsed.options.method, 'oauth');
   assert.equal(parsed.options.profile, 'main');
   assert.equal(parsed.legacy, false);
 });
@@ -64,11 +64,8 @@ test('legacy interactive + output combination', () => {
   assert.equal(parsed.options.output, 'custom.json');
 });
 
-test('import requires a subcommand', () => {
-  const parsed = parseArgs(['import', 'gppt', '--profile', 'main']);
-  assert.equal(parsed.command, 'import');
-  assert.equal(parsed.subcommand, 'gppt');
-  assert.equal(parsed.options.profile, 'main');
+test('removed import command is rejected', () => {
+  assert.throws(() => parseArgs(['import', 'gppt']), CliUsageError);
 });
 
 test('status / token / configure / logout flags', () => {

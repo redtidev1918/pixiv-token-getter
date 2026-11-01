@@ -27,21 +27,20 @@ const state = await status({ profile: 'main' }); // 不含原始密钥
 | `refreshToken(refreshToken, options?)` | 仅向 Pixiv 刷新；不读写 profile 存储 |
 | `status(options?)` | 返回不含密钥的状态 |
 | `logout({ profile?, purge? })` | 删除令牌；`purge` 还删除偏好和浏览器数据 |
-| `importGppt({ profile?, sourceProfile? })` | 将 gppt 凭据导入 ptg 存储 |
 
 常用 `getToken` 选项：
 
 | 选项 | 含义 |
 | --- | --- |
 | `profile` | profile 名，默认 `default` |
-| `provider` | `native`、`gppt` 或 `auto`；默认使用 profile 偏好 |
-| `method` | `oauth` / `browser` / `e2e` / `import` |
+| `provider` | `native`；默认使用 profile 偏好 |
+| `method` | `oauth` / `browser` / `e2e` |
 | `force` | 跳过缓存与刷新，重新登录 |
 | `refreshOnly` | 不登录；主动刷新已保存的令牌，缺失或失败时报错 |
 | `proxy` | 代理 URL；`false` 禁用代理 |
 | `skewMs` | 过期安全余量，默认 5 分钟 |
 
-`native` 是默认 provider。其 `oauth` 与 `browser` 方法等价，打开浏览器让用户登录；`e2e` 自动填写凭据。`gppt` 是可选 provider。指定 `auto` 时才可能按 native、gppt 顺序尝试；明确指定单一 provider 不会隐式回退。
+`native` 是唯一 provider。其 `oauth` 与 `browser` 方法等价，打开浏览器让用户登录；`e2e` 自动填写凭据。
 
 ## 令牌形状
 
@@ -54,12 +53,12 @@ interface TokenInfo {
   obtained_at?: string;
   user?: { id?: string; name?: string; account?: string };
   web_cookies?: Record<string, string>;
-  provider?: 'native' | 'gppt' | 'auto';
-  method?: 'oauth' | 'browser' | 'e2e' | 'import';
+  provider?: 'native';
+  method?: 'oauth' | 'browser' | 'e2e';
 }
 ```
 
-`expires_at` 是带时区的绝对过期时间；使用 `isTokenExpired(token, skewMs?)` 或 `msUntilExpiry(token)` 判断有效期。网页 Cookie 只可能来自原生浏览器登录，gppt 导入不会伪造。
+`expires_at` 是带时区的绝对过期时间；使用 `isTokenExpired(token, skewMs?)` 或 `msUntilExpiry(token)` 判断有效期。网页 Cookie 只可能来自原生浏览器登录。
 
 ## Profile 与存储
 

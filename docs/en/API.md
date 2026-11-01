@@ -27,21 +27,20 @@ const state = await status({ profile: 'main' }); // no raw secrets
 | `refreshToken(refreshToken, options?)` | Refresh against Pixiv without reading or writing profile storage |
 | `status(options?)` | Return state without secret values |
 | `logout({ profile?, purge? })` | Delete the token; `purge` also removes preferences and browser data |
-| `importGppt({ profile?, sourceProfile? })` | Import a gppt credential into ptg storage |
 
 Common `getToken` options:
 
 | Option | Meaning |
 | --- | --- |
 | `profile` | Profile name; defaults to `default` |
-| `provider` | `native`, `gppt`, or `auto`; defaults to the profile preference |
-| `method` | `oauth` / `browser` / `e2e` / `import` |
+| `provider` | `native`; defaults to the profile preference |
+| `method` | `oauth` / `browser` / `e2e` |
 | `force` | Skip cache and refresh, then log in again |
 | `refreshOnly` | Never log in; actively refresh the stored token or fail |
 | `proxy` | Proxy URL; `false` disables proxying |
 | `skewMs` | Expiry safety margin; defaults to five minutes |
 
-`native` is the default provider. Its `oauth` and `browser` methods are aliases that open a browser for user login; `e2e` fills in credentials automatically. `gppt` is optional. Only `auto` may try native and then gppt; selecting one provider never triggers an implicit fallback.
+`native` is the only provider. Its `oauth` and `browser` methods open a browser for user login; `e2e` fills in credentials automatically.
 
 ## Token shape
 
@@ -54,12 +53,12 @@ interface TokenInfo {
   obtained_at?: string;
   user?: { id?: string; name?: string; account?: string };
   web_cookies?: Record<string, string>;
-  provider?: 'native' | 'gppt' | 'auto';
-  method?: 'oauth' | 'browser' | 'e2e' | 'import';
+  provider?: 'native';
+  method?: 'oauth' | 'browser' | 'e2e';
 }
 ```
 
-`expires_at` is an absolute timestamp with a timezone. Use `isTokenExpired(token, skewMs?)` or `msUntilExpiry(token)` to check expiry. Only native browser login can produce web cookies; gppt imports never fabricate them.
+`expires_at` is an absolute timestamp with a timezone. Use `isTokenExpired(token, skewMs?)` or `msUntilExpiry(token)` to check expiry. Only native browser login can produce web cookies.
 
 ## Profiles and storage
 

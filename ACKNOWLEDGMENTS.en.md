@@ -34,30 +34,9 @@ studying gppt (v5). In particular, the following *ideas* were adopted:
 - **Interoperability by file contract:** gppt's token file is a stable, documented
   boundary we can read without depending on the Python package.
 
-### What we deliberately did NOT do
+### Current status
 
-- **No gppt source code was copied.** The Node.js implementation (PKCE, the
-  Puppeteer flows, the store, the provider layer) is original work.
-- **No hard dependency on gppt or Python.** gppt is an *optional* interoperability
-  provider. `npm install pixiv-token-getter` never installs or requires Python, and
-  the native provider works fully standalone.
-- **We never parse gppt's stdout.** Importing a gppt credential reads its
-  structured token file (`<profile>.token.json`) only — scraping console output for
-  secrets would be brittle and insecure.
-- **We never fabricate `web_cookies` for a gppt-imported token.** A gppt credential
-  carries an App-API token, not a website session. The field is omitted rather than
-  filled with a fake value.
-
-### File-format compatibility
-
-`ptg import gppt` looks for gppt's credential file at, in order:
-
-1. `$GPPT_CONFIG_DIR`
-2. `$XDG_CONFIG_HOME/gppt`
-3. `~/.config/gppt`
-
-with the file name `<profile>.token.json` (a bare `.token.json` is also accepted
-for the default profile). We expand `~` ourselves, because gppt does not.
+No gppt source code was copied. This project no longer provides a gppt provider or credential import. The design history remains here for attribution; see the [migration guide](MIGRATION.en.md) for existing configurations.
 
 ---
 

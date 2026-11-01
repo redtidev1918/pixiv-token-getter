@@ -18,7 +18,7 @@ For the `ptg` command:
 npm install -g pixiv-token-getter
 ```
 
-**Neither Python nor gppt is required.** Without them, native login, token caching, and refresh work normally. Python is needed only if you ask ptg to run `gppt login`; importing an existing gppt token file does not run Python. See the [guides](docs/en/GUIDES.md#importing-a-gppt-credential).
+**Node.js only; no Python dependency.** Native login, caching, and refresh are built in. See the [migration guide](MIGRATION.en.md) for older configurations.
 
 ## Quick start
 
@@ -57,7 +57,7 @@ The CLI masks tokens and cookies by default. `ptg token --show-secret` reveals t
 
 | Goal | Guide |
 | --- | --- |
-| Login methods, profiles, proxies, CI, gppt | [Guides](docs/en/GUIDES.md) |
+| Login methods, profiles, proxies, CI | [Guides](docs/en/GUIDES.md) |
 | Commands and exit codes | [CLI reference](docs/en/CLI.md) |
 | Functions, types, and errors | [API reference](docs/en/API.md) |
 | Upgrade from older versions | [Migration guide](MIGRATION.en.md) |

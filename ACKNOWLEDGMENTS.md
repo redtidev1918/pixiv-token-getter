@@ -23,22 +23,9 @@
 - **profile 概念**，让多个 Pixiv 账号可以共存。
 - **以文件契约实现互操作：** gppt 的令牌文件是一个稳定且有文档说明的边界，让我们无需依赖 Python 包即可读取。
 
-### 我们刻意没有做的事
+### 当前状态
 
-- **没有复制任何 gppt 源码。** Node.js 实现（PKCE、Puppeteer 流程、存储、provider 层）均为原创工作。
-- **不硬依赖 gppt 或 Python。** gppt 是一个*可选*的互操作 provider。`npm install pixiv-token-getter` 永远不会安装或要求 Python，原生 provider 可完全独立工作。
-- **我们绝不解析 gppt 的 stdout。** 导入 gppt 凭据只读取其结构化令牌文件（`<profile>.token.json`）—— 从控制台输出里抓取密钥既脆弱又不安全。
-- **我们绝不为 gppt 导入的令牌伪造 `web_cookies`。** gppt 凭据携带的是 App API 令牌，而不是网站会话。该字段被直接省略，而不是填入一个假值。
-
-### 文件格式兼容性
-
-`ptg import gppt` 按以下顺序查找 gppt 的凭据文件：
-
-1. `$GPPT_CONFIG_DIR`
-2. `$XDG_CONFIG_HOME/gppt`
-3. `~/.config/gppt`
-
-文件名为 `<profile>.token.json`（默认 profile 也接受裸 `.token.json`）。我们会自行展开 `~`，因为 gppt 不会。
+本项目没有复制 gppt 源码，也不再提供 gppt provider 或凭据导入。历史设计借鉴仅作为归属记录；升级现有配置见[迁移指南](MIGRATION.md)。
 
 ---
 

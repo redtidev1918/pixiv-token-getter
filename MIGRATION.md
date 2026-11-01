@@ -2,6 +2,21 @@
 
 **语言 / Language:** 中文 · [English](./MIGRATION.en.md)
 
+## 从 2.6.x 升级：移除 gppt 兼容层
+
+这是破坏性变更。`gppt` provider、`auto` 回退、`import` 方法、`ptg import gppt`、`importGppt()` 和 `gppt` API 已移除。新代码只使用 `native` provider。
+
+旧 profile 中的 `provider: gppt/auto` 与 `method: import` 在读取时自动映射为 `native` / `oauth`，不会立即改写磁盘文件；下次保存偏好时会写入新值。**已有 ptg 令牌文件不会被删除**：有效令牌仍可复用，refresh token 可继续刷新；刷新成功后会写入原生 provider 元数据。需要重新登录时运行：
+
+```sh
+ptg configure --profile main --provider native --method oauth
+ptg login --profile main
+```
+
+删除旧脚本中的 `ptg import gppt`、`--source-profile`、`--provider gppt|auto` 和 `--method import`。新配置不接受这些值。下文 2.4.x 记录仅供历史参考。
+
+---
+
 **从 `2.3.x` → `2.4.x`**
 
 `2.4.0` 把这个包从*一次性 token 抓取器*升级为一个**凭据管理器**。这是一个**无破坏性变更**的 minor 版本：没有删除任何东西，每个旧导出都保留原有签名。本指南覆盖少量行为变化，并展示推荐的新 API。
@@ -37,7 +52,6 @@ const token = await getToken({ profile: 'default' });
 | — | `resolveToken(opts)` | 类似 `getToken`，并额外告诉你 `source` |
 | — | `status({ profile })` | 查看状态，且不含密钥 |
 | — | `logout({ profile })` | 删除一份凭据 |
-| — | `importGppt({ profile })` | 导入一份 gppt 凭据 |
 
 `loginInteractive()` / `loginHeadless()` 仍然导出且签名不变；`getTokenInteractive` / `getTokenHeadless` 现在只是它们的别名。
 
@@ -103,7 +117,6 @@ ptg refresh    # refresh the stored token
 ptg status     # inspect (never prints secrets)
 ptg configure  # save non-secret profile preferences
 ptg logout     # remove stored credentials (--purge also clears profile + browser)
-ptg import gppt
 ptg token      # print the stored token (masked unless --show-secret)
 ```
 
@@ -161,7 +174,7 @@ interface TokenInfo {
   expires_at?: string;       // absolute ISO-8601 WITH timezone — prefer this over expires_in
   obtained_at?: string;
   web_cookies?: Record<string, string>;
-  provider?: 'native' | 'gppt' | 'auto';
+  provider?: 'native';
   method?: 'oauth' | 'browser' | 'e2e' | 'import';
   last_refreshed_at?: string;
 }
@@ -183,8 +196,6 @@ isTokenExpired(token, 0);     // no skew
   使用 `ptg configure --profile main` 与 `getToken({ profile: 'main' })`。
 - **刷新** —— `refreshToken()` / `refreshStoredToken()`，轮换安全。
 - **原子化存储** —— 写入依次经过临时文件 → `fsync` → `rename` → `chmod 0600`。
-- **Provider** —— `native`（默认）、`gppt`（可选）、`auto`（受控回退）。
-- **gppt 互操作** —— `ptg import gppt` 读取 gppt 的结构化令牌文件；
   它绝不解析 stdout，其它任何环节也不需要 Python。
 - **网页 Cookie** —— `token.web_cookies.PHPSESSID` 仅来自原生浏览器登录。
 - **代理** —— 浏览器与令牌请求共用同一个解析器。

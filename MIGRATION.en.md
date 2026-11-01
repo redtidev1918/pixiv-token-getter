@@ -2,6 +2,21 @@
 
 **Language / 语言:** [中文](./MIGRATION.md) · English
 
+## Upgrading from 2.6.x: gppt compatibility removed
+
+This is a breaking change. The `gppt` provider, `auto` fallback, `import` method, `ptg import gppt`, `importGppt()`, and `gppt` API are removed. New code uses only the `native` provider.
+
+Old profile preferences `provider: gppt/auto` and `method: import` map to `native` / `oauth` when read; the file is rewritten only when preferences are saved. **Existing ptg token files are preserved**: valid tokens remain reusable and refresh tokens remain refreshable. Successful refresh writes native provider metadata. To log in again:
+
+```sh
+ptg configure --profile main --provider native --method oauth
+ptg login --profile main
+```
+
+Remove `ptg import gppt`, `--source-profile`, `--provider gppt|auto`, and `--method import` from scripts. New configuration rejects these values. The 2.4.x notes below are historical.
+
+---
+
 **From `2.3.x` → `2.4.x`**
 
 `2.4.0` upgrades this package from a *one-shot token getter* into a **credential
@@ -45,7 +60,6 @@ login, so it is the correct choice only when you *want* a fresh interactive logi
 | — | `resolveToken(opts)` | like `getToken`, also tells you `source` |
 | — | `status({ profile })` | inspect state without secrets |
 | — | `logout({ profile })` | remove a credential |
-| — | `importGppt({ profile })` | import a gppt credential |
 
 `loginInteractive()` / `loginHeadless()` remain exported with unchanged
 signatures; `getTokenInteractive` / `getTokenHeadless` are now aliases over them.
@@ -120,7 +134,6 @@ ptg refresh    # refresh the stored token
 ptg status     # inspect (never prints secrets)
 ptg configure  # save non-secret profile preferences
 ptg logout     # remove stored credentials (--purge also clears profile + browser)
-ptg import gppt
 ptg token      # print the stored token (masked unless --show-secret)
 ```
 
@@ -181,7 +194,7 @@ interface TokenInfo {
   expires_at?: string;       // absolute ISO-8601 WITH timezone — prefer this over expires_in
   obtained_at?: string;
   web_cookies?: Record<string, string>;
-  provider?: 'native' | 'gppt' | 'auto';
+  provider?: 'native';
   method?: 'oauth' | 'browser' | 'e2e' | 'import';
   last_refreshed_at?: string;
 }
@@ -204,8 +217,6 @@ isTokenExpired(token, 0);     // no skew
   Use `ptg configure --profile main` and `getToken({ profile: 'main' })`.
 - **Refresh** — `refreshToken()` / `refreshStoredToken()`, rotation-safe.
 - **Atomic storage** — writes go through temp file → `fsync` → `rename` → `chmod 0600`.
-- **Providers** — `native` (default), `gppt` (optional), `auto` (controlled fallback).
-- **gppt interoperability** — `ptg import gppt` reads gppt's structured token file;
   it never parses stdout and never requires Python for anything else.
 - **Web cookies** — `token.web_cookies.PHPSESSID` from native browser login only.
 - **Proxy** — one resolver for both the browser and token requests.
