@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.0.0](https://github.com/redtidev1918/pixiv-token-getter/compare/v2.6.1...v3.0.0) (2026-11-01)
+
+
+### ⚠ BREAKING CHANGES
+
+* **auth:** gppt provider, auto fallback, import CLI/API, and import method are removed. Existing ptg profile preferences migrate to native on read; stored tokens remain reusable and refreshable. See MIGRATION.md.
+
+### Features
+
+* **auth:** remove gppt compatibility layer ([7127f72](https://github.com/redtidev1918/pixiv-token-getter/commit/7127f725138c1574794a35e4b075cee0ac8ab22b))
+
 ## [2.6.1](https://github.com/redtidev1918/pixiv-token-getter/compare/v2.6.0...v2.6.1) (2026-09-11)
 
 
